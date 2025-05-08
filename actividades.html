@@ -3,146 +3,246 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Subactividades del Proyecto</title>
-    <!-- Bootstrap CSS -->
+    <title>Presupuesto del Proyecto - Gestión de Filas</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.2/css/bootstrap.min.css">
     <style>
-        body {
-            padding-top: 56px;
-            font-family: Arial, sans-serif;
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --light: #ecf0f1;
+            --success: #2ecc71;
+            --warning: #f39c12;
         }
-        .content {
-            margin-top: 30px;
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
             padding: 20px;
         }
-        h2 {
-            color: #34495e;
-            margin-bottom: 20px;
+
+        .toggle-box {
+            background-color: #f1f1f1;
+            border: 2px solid #3498db;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 15px;
+            display: none;
+            white-space: pre-line;
         }
-        .activity {
-            margin-bottom: 30px;
-            padding: 15px;
+
+        .toggle-button {
+            background-color: #3498db;
+            color: white;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border: none;
             border-radius: 5px;
-            background-color: #f9f9f9;
+            cursor: pointer;
         }
-        .activity h3 {
-            color: #2c3e50;
+
+        .toggle-button:hover {
+            background-color: #2980b9;
+        }
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 30px 0;
+            text-align: center;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
             margin-bottom: 10px;
         }
-        .resources {
-            margin-top: 10px;
-            padding-top: 10px;
-            border-top: 1px dashed #ddd;
+        
+        h2 {
+            color: var(--primary);
+            margin: 25px 0 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--secondary);
         }
-        .price-tag {
-            background-color: #e7f4e4;
-            padding: 8px 12px;
-            border-radius: 4px;
-            display: inline-block;
-            font-weight: bold;
-            color: #2c5e2e;
-            margin-top: 10px;
-            border-left: 3px solid #2c5e2e;
+        
+        h3 {
+            color: var(--secondary);
+            margin: 20px 0 10px;
         }
-
-        .percentage-tag {
-            background-color: #e4eaf4;
-            padding: 6px 10px;
-            border-radius: 4px;
-            display: inline-block;
-            font-weight: bold;
-            color: #2e4a5e;
-            margin-top: 10px;
-            margin-left: 10px;
-            border-left: 3px solid #2e4a5e;
-        }
-
-        .devs-cost-section {
-            background-color: #f8d7da;
-            border: 1px solid #f5c6cb;
-            border-radius: 5px;
-            padding: 15px;
+        
+        .progress-container {
+            background-color: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             margin-bottom: 30px;
         }
-
-        .total-cost-section {
-            background-color: #d4edda;
-            border: 1px solid #c3e6cb;
-            border-radius: 5px;
-            padding: 15px;
-            margin: 30px 0;
+        
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
         }
-
-        .activity-group-header {
-            background-color: #f5f5f5;
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 5px;
-            border-left: 6px solid #3498db;
+        
+        .progress-date {
+            background-color: var(--secondary);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
         }
-
-        .checkpoint {
-            background-color: #fff3cd;
+        
+        .activity-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+        
+        .activity-header {
+            background-color: var(--primary);
+            color: white;
+            padding: 15px 20px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .activity-content {
             padding: 20px;
-            margin: 30px 0;
-            border-radius: 5px;
-            border-left: 6px solid #ffc107;
+        }
+        
+        .subactivity {
+            border-left: 3px solid var(--secondary);
+            padding: 10px 15px;
+            margin: 15px 0;
+            background-color: #f8f9fa;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .subactivity-header {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: var(--primary);
+        }
+        
+        .cost {
+            font-weight: bold;
+            color: var(--accent);
+        }
+        
+        .percentage {
+            display: inline-block;
+            
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            margin-left: 10px;
+        }
+        
+        .highlight {
+            background-color: var(--secondary);
+            color: white;
+        }
+        
+        .summary-container {
+            display: flex;
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .summary-info {
+            flex: 1;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        
+        .chart-container {
+            flex: 1;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            height: 500px;
+        }
+        
+        .total-box {
+            background-color: var(--primary);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
             text-align: center;
+            font-size: 1.2rem;
         }
-
-        /* Colores individuales para cada tipo de actividad */
-        .activity-a {
-            border-left: 4px solid #f39c12; /* Naranja */
+        
+        .total-amount {
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 10px 0;
         }
-        .activity-b {
-            border-left: 4px solid #67b0e0; /* Azul */
+        
+        .divider {
+            height: 1px;
+            background-color: #ddd;
+            margin: 20px 0;
         }
-        .activity-c {
-            border-left: 4px solid #7de7a8; /* Verde */
+        
+        .key-indicator {
+            display: flex;
+            justify-content: space-between;
+            background-color: #f8f9fa;
+            padding: 10px 15px;
+            border-radius: 4px;
+            margin: 10px 0;
         }
-        .activity-d {
-            border-left: 4px solid #c593db; /* Morado */
+        
+        .key-indicator.highlight-row {
+            background-color: #e3f2fd;
+            border-left: 4px solid var(--secondary);
         }
-        .activity-e {
-            border-left: 4px solid #f0b68d; /* Rojo */
+        
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            color: #777;
+            padding: 20px 0;
+            border-top: 1px solid #ddd;
         }
-        .activity-f {
-            border-left: 4px solid #7edecb; /* Verde azulado */
-        }
-        .activity-g {
-            border-left: 4px solid #f7dc6f; /* Amarillo */
-        }
-        .activity-h {
-            border-left: 4px solid #f1978e; /* Azul oscuro */
-        }
-        .activity-i {
-            border-left: 4px solid #75b9e7; /* Naranja oscuro */
-        }
-        .activity-j {
-            border-left: 4px solid #c893d8; /* Verde esmeralda */
-        }
-        .activity-k {
-            border-left: 4px solid #86e0ac; /* Morado oscuro */
-        }
-        .activity-l {
-            border-left: 4px solid #f0b68d; /* Azul acero */
-        }
-        .activity-m {
-            border-left: 4px solid #76e0cb; /* Rojo ladrillo */
-        }
-        .activity-n {
-            border-left: 4px solid #f7dc6f; /* Verde esmeralda */
-        }
-        .activity-o {
-            border-left: 4px solid #75b9e7; /* Naranja */
-        }
-        .activity-p {
-            border-left: 4px solid #c893d8; /* Gris */
+        
+        @media (max-width: 768px) {
+            .summary-container {
+                flex-direction: column;
+            }
+            
+            .chart-container {
+                height: 400px;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Menú de navegación -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
         <div class="container">
             <a class="navbar-brand" href="#">Proyecto de Gestión de Turnos</a>
@@ -150,7 +250,7 @@
                     aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-
+            
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item">
@@ -167,682 +267,549 @@
         </div>
     </nav>
 
-    <div class="container content">
-        <p class="text-center mb-4">Punto de control: De 21 de abril a 2 de agosto de 2025 (3.4 meses)</p>
-
-        <!-- Sección de costos de desarrolladores -->
-        <div class="devs-cost-section">
-            <h3 class="text-center mb-3">Costos de Equipo de Desarrollo</h3>
-            <div class="row">
-                <div class="col-md-6">
-                    <p><strong>Desarrolladores Junior:</strong> 4 personas</p>
-                    <p><strong>Salario mensual por desarrollador:</strong> $3,000,000 COP ($600 USD)</p>
-                    <p><strong>Salario mensual equipo completo:</strong> $12,000,000 COP ($2,400 USD)</p>
+    <div class="container" style="padding-top: 130px;">
+        <header>
+            <h1>Presupuesto del Proyecto</h1>
+            <p>Sistema de Gestión de Filas</p>
+        </header>
+        
+        <div class="progress-container">
+            <div class="progress-info">
+                <div>
+                    <h2 style="border-bottom: none; margin: 0;">Punto de Control</h2>
+                    <p>Actividades A - K2 (3.4 meses del proyecto)</p>
                 </div>
-                <div class="col-md-6">
-                    <p><strong>Duración del proyecto:</strong> 3.4 meses</p>
-                    <p><strong>Costo total equipo de desarrollo:</strong> $40,800,000 COP ($8,160 USD)</p>
-                    <p><strong>Nota:</strong> Los costos de las actividades incluyen materiales, herramientas y servicios adicionales.</p>
+                <div class="progress-date">2 de agosto de 2025</div>
+            </div>
+            <div class="divider"></div>
+            <div class="key-indicator">
+                <div>Duración del proyecto completo:</div>
+                <div><strong>21 de abril - 5 de octubre, 2025</strong></div>
+            </div>
+            <div class="key-indicator">
+                <div>Equipo:</div>
+                <div><strong>4 desarrolladores junior</strong></div>
+            </div>
+            <div class="key-indicator highlight-row">
+                <div>Salario mensual por desarrollador:</div>
+                <div class="cost">COP $3,000,000</div>
+            </div>
+        </div>
+        
+        <!-- Actividades y Subactividades -->
+        <h2>Desglose de Actividades y Costos</h2>
+        
+        <div class="activity-container">
+            <div class="activity-header">
+                <div>Actividad A: Análisis de Requisitos</div>
+                <div>COP $8,520,000 <span class="percentage">6.21%</span></div>
+            </div>
+            <div class="activity-content">
+                <div class="subactivity">
+                    <div class="subactivity-header">
+                        <div>A.1 Encuestas a los usuarios</div>
+                        <div>COP $1,200,000 <span class="percentage">0.87%</span></div>
+                    </div>
+                    <p>Diseño y aplicación de cuestionarios sobre tiempos de espera, satisfacción y mejoras deseadas.</p>
+                    <p><strong>Recursos:</strong> Plataforma de encuestas googleforms (gratuita), tiempo de personal existente para aplicar encuestas, análisis por desarrolladores del equipo.</p>
+                </div>
+                <div class="subactivity">
+                    <div class="subactivity-header">
+                        <div>A.2 Estudiar métodos actuales</div>
+                        <div>COP $2,640,000 <span class="percentage">1.92%</span></div>
+                    </div>
+                    <p>Revisión de sistemas de gestión de filas existentes y estudio de software similar.</p>
+                    <p><strong>Recursos:</strong> Tiempo de 2 desarrolladores durante 2 semanas, acceso a documentación de sistemas existentes, suscripción temporal a plataformas de benchmarking.</p>
+                </div>
+                <div class="subactivity">
+                    <div class="subactivity-header">
+                        <div>A.3 Definir funcionalidades específicas</div>
+                        <div>COP $2,400,000 <span class="percentage">1.75%</span></div>
+                    </div>
+                    <p>Definición de funciones del sistema basadas en encuestas y estudios previos.</p>
+                    <p><strong>Recursos:</strong> Tiempo de 4 desarrolladores durante 1 semana, software de modelado UML (Sparx Systems:$229 USD (licencia perpetua básica)).</p>
+                </div>
+                <div class="subactivity">
+                    <div class="subactivity-header">
+                        <div>A.4 Documentar requerimientos</div>
+                        <div>COP $2,280,000 <span class="percentage">1.66%</span></div>
+                    </div>
+                    <p>Redacción de documento con requisitos funcionales y no funcionales.</p>
+                    <p><strong>Recursos:</strong> Tiempo de 3 desarrolladores durante 1 semana, herramientas de edición colaborativa ya disponibles.</p>
                 </div>
             </div>
         </div>
-
-    <div class="container content">
-        <h2 class="text-center mb-4">Subactividades del Proyecto con Estimación de Costos</h2>
-
-        <!-- Grupo de actividades A -->
-        <div class="activity-group-header" id="group-a">
-            <h3>Definir requisitos funcionales y no funcionales (A.1 - A.4)</h3>
-            <div class="group-percentage"></div>
-        </div>
-
-        <div class="activity activity-a">
-            <h3>A.1 Encuestas a los usuarios</h3>
-            <p><strong>Cómo se hace:</strong> Diseñar un cuestionario sobre tiempos de espera, satisfacción y mejoras deseadas. Aplicarlo presencialmente o por formularios digitales (Google Forms, Typeform). Analizar respuestas para identificar patrones.</p>
-            <div class="resources">
-                <p><strong>Recursos:</strong> Plataforma de encuestas, dispositivos móviles o impresos, acceso a usuarios.</p>
+        
+        <div class="activity-container">
+            <div class="activity-header">
+                <div>Actividad B: Análisis de Mercado</div>
+                <div>COP $6,480,000 <span class="percentage">4.72%</span></div>
             </div>
-            <div class="price-tag">Costo estimado: $25</div>
-            <div class="percentage-tag activity-percentage"></div>
-        </div>
-
-        <div class="activity activity-a">
-            <h3>A.2 Estudiar métodos actuales</h3>
-            <p><strong>Cómo se hace:</strong> Revisar sistemas de gestión de filas en otras empresas, estudiar software similar (turnos digitales, citas previas). Analizar documentación técnica y realizar entrevistas con empleados o clientes.</p>
-            <div class="resources">
-                <p><strong>Recursos:</strong> Documentación de software, informes de uso, entrevistas, Internet.</p>
+            <div class="activity-content">
+                <div class="subactivity">
+                    <div class="subactivity-header">
+                        <div>B.1 Estudio de competencia</div>
+                        <div>COP $3,240,000 <span class="percentage">2.36%</span></div>
+                    </div>
+                    <p>Investigación de soluciones similares en el mercado y análisis FODA de competidores.</p>
+                    <p><strong>Recursos:</strong> Tiempo de 2 desarrolladores durante 1 semanas, acceso a informes de mercado ya adquiridos.</p>
+                </div>
+                <div class="subactivity">
+                    <div class="subactivity-header">
+                        <div>B.2 Análisis financiero</div>
+                        <div>COP $3,240,000 <span class="percentage">2.36%</span></div>
+                    </div>
+                    <p>Cálculo de costos y estimación de retorno de inversión.</p>
+                    <p><strong>Recursos:</strong> Tiempo de 2 desarrolladores durante 2 semanas, colaboración con departamento financiero existente.</p>
+                </div>
             </div>
-            <div class="price-tag">Costo estimado: $30</div>
-            <div class="percentage-tag activity-percentage"></div>
         </div>
-
-        <div class="activity activity-a">
-            <h3>A.3 Definir funcionalidades específicas</h3>
-            <p><strong>Cómo se hace:</strong> Con base en encuestas y estudio de métodos, definir qué funciones tendrá el sistema (turnos virtuales, notificaciones, estimación de espera). Crear una lista priorizada y validar con stakeholders.</p>
-            <div class="resources">
-                <p><strong>Recursos:</strong> Reuniones con el equipo, software de gestión de proyectos (Trello, Notion), documentos de especificaciones.</p>
+        
+        <div class="activity-container">
+            <div class="activity-header">
+                <div>Actividad C: Diseño de Arquitectura</div>
+                <div>COP $7,020,000 <span class="percentage">5.11%</span></div>
             </div>
-            <div class="price-tag">Costo estimado: $42</div>
-            <div class="percentage-tag activity-percentage"></div>
-        </div>
-
-        <div class="activity activity-a">
-            <h3>A.4 Documentar requerimientos</h3>
-            <p><strong>Cómo se hace:</strong> Redactar un documento con requisitos funcionales y no funcionales, diagramas de flujo y casos de uso. Validar con el equipo antes de finalizar.</p>
-            <div class="resources">
-                <p><strong>Recursos:</strong> Procesador de texto (Google Docs, Word), herramientas de diagramación (Draw.io, Lucidchart), retroalimentación de stakeholders.</p>
+            <div class="activity-content">
+                <div class="subactivity">
+                    <div class="subactivity-header">
+                        <div>C.1 Casos de uso (Relación usuario-Software)</div>
+                        <div>COP $3,240,000 <span class="percentage">2.36%</span></div>
+                    </div>
+                    <p>Identificación de actores principales y descripción de interacciones típicas.</p>
+                    <p><strong>Recursos:</strong> Tiempo de 2 desarrolladores durante 1 semana, software de modelado ya disponible.</p>
+                </div>
+                <div class="subactivity">
+                    <div class="subactivity-header">
+                        <div>C.2 Diagramar estructura del sistema</div>
+                        <div>COP $3,780,000 <span class="percentage">2.75%</span></div>
+                    </div>
+                    <p>Creación de diagramas arquitectónicos y definición de capas de aplicación.</p>
+                    <p><strong>Recursos:</strong> Tiempo de 3 desarrolladores durante 1.5 semanas, herramientas de diagramación ya disponibles.</p>
+                </div>
             </div>
-            <div class="price-tag">Costo estimado: $35</div>
-            <div class="percentage-tag activity-percentage"></div>
         </div>
-
-        <!-- Grupo de actividades B -->
-        <div class="activity-group-header" id="group-b">
-            <h3>Análisis de mercado y viabilidad (B.1 - B.2)</h3>
-            <div class="group-percentage"></div>
-        </div>
-
-        <div class="activity activity-b">
-            <h3>B.1 Estudio de competencia</h3>
-            <p><strong>Cómo se hace:</strong> Investigar soluciones similares en el mercado, comparar características, precios y opiniones de usuarios. Realizar un análisis FODA de competidores principales. Documentar fortalezas y debilidades para identificar oportunidades de diferenciación.</p>
-            <div class="resources">
-                <p><strong>Recursos:</strong> Acceso a internet, suscripciones a informes de mercado, herramientas de análisis competitivo, plantillas de comparativa.</p>
+        
+        <div class="activity-container">
+            <div class="activity-header">
+                <div>Actividad D: Diseño de UI/UX</div>
+                <div>COP $7,560,000 <span class="percentage">5.51%</span></div>
             </div>
-            <div class="price-tag">Costo estimado: $40</div>
-            <div class="percentage-tag activity-percentage"></div>
-        </div>
-
-        <div class="activity activity-b">
-            <h3>B.2 Análisis financiero</h3>
-            <p><strong>Cómo se hace:</strong> Calcular costos de desarrollo e implementación, estimar retorno de inversión. Crear modelos de precios para diferentes segmentos de clientes. Proyectar flujo de caja a 12-24 meses y presentar resultados al equipo directivo.</p>
-            <div class="resources">
-                <p><strong>Recursos:</strong> Software de hojas de cálculo (Excel, Google Sheets), herramientas de análisis financiero, plantillas de presupuesto, datos históricos de proyectos similares.</p>
+            <div class="activity-content">
+                <div class="subactivity">
+                    <div class="subactivity-header">
+                        <div>D.1 Wireframes</div>
+                        <div>COP $3,240,000 <span class="percentage">2.36%</span></div>
+                    </div>
+                    <p>Diseño de esquemas básicos de cada pantalla mostrando disposición de elementos clave.</p>
+                    <p><strong>Recursos:</strong> Tiempo de 2 desarrolladores durante 2 semanas, herramientas de wireframing  como Figma.</p>
+                </div>
+                <div class="subactivity">
+                    <div class="subactivity-header">
+                        <div>D.2 Mockups interactivos</div>
+                        <div>COP $4,320,000 <span class="percentage">3.15%</span></div>
+                    </div>
+                    <p>Transformación de wireframes en diseños detallados con prototipos interactivos.</p>
+                    <p><strong>Recursos:</strong> Tiempo de 3 desarrolladores durante 1.8 semanas, licencia Figma ya disponible.</p>
+                </div>
             </div>
-            <div class="price-tag">Costo estimado: $58</div>
-            <div class="percentage-tag activity-percentage"></div>
         </div>
-
-        <!-- Grupo de actividades C -->
-        <div class="activity-group-header" id="group-c">
-            <h3>Diseñar la arquitectura del sistema (C.1 - C.2)</h3>
-            <div class="group-percentage"></div>
-        </div>
-
-        <div class="activity activity-c">
-            <h3>C.1 Casos de uso (Relación usuario-Software)</h3>
-            <p><strong>Cómo se hace:</strong> Identificar actores principales (clientes, empleados, administradores). Describir interacciones típicas con el sistema paso a paso. Documentar flujos normales y alternativos. Validar casos de uso con representantes de cada grupo de usuarios.</p>
-            <div class="resources">
-                <p><strong>Recursos:</strong> Herramientas de modelado UML, plantillas de casos de uso, software de documentación, sesiones con usuarios.</p>
+        
+        <div class="activity-container">
+            <div class="activity-header">
+                <div>Actividad E: Configuración del Entorno</div>
+                <div>COP $6,840,000 <span class="percentage">4.98%</span></div>
             </div>
-            <div class="price-tag">Costo estimado: $52</div>
-            <div class="percentage-tag activity-percentage"></div>
-        </div>
-
-        <div class="activity activity-c">
-            <h3>C.2 Diagramar estructura del sistema</h3>
-            <p><strong>Cómo se hace:</strong> Crear diagramas arquitectónicos mostrando componentes principales y sus relaciones. Definir capas de aplicación (presentación, lógica, datos). Documentar integraciones con sistemas externos. Revisar con el equipo técnico para validar viabilidad.</p>
-            <div class="resources">
-                <p><strong>Recursos:</strong> Herramientas de diagramación (Draw.io, Lucidchart), software de modelado UML, plantillas de arquitectura, sesiones con arquitectos de software.</p>
+            <div class="activity-content">
+                <div class="subactivity">
+                    <div class="subactivity-header">
+                        <div>E.1 Instalación de herramientas</div>
+                        <div>COP $1,440,000 <span class="percentage">1.05%</span></div>
+                    </div>
+                    <p>Configuración de entornos de desarrollo e instalación de herramientas necesarias.</p>
+                    <p><strong>Recursos:</strong> Tiempo de 1 desarrollador durante 0.5 semanas, la mayoría de herramientas son open source.</p>
+                </div>
+                <div class="subactivity">
+                    <div class="subactivity-header">
+                        <div>E.2 Configuración de servidores</div>
+                        <div>COP $2,880,000 <span class="percentage">2.10%</span></div>
+                    </div>
+                    <p>Aprovisionamiento de servidores para entornos de desarrollo, pruebas y producción.</p>
+                    <p><strong>Recursos:</strong> Tiempo de 2 desarrolladores durante 0.5 semanas, costos de servidores en la nube.</p>
+                </div>
+                <div class="subactivity">
+                    <div class="subactivity-header">
+                        <div>E.3 Configuración de repositorios</div>
+                        <div>COP $2,520,000 <span class="percentage">1.84%</span></div>
+                    </div>
+                    <p>Creación de estructura de repositorios de código y configuración de CI/CD.</p>
+                    <p><strong>Recursos:</strong> Tiempo de 2 desarrolladores durante 0.5 semanas, GitHub/GitLab ya contratado.</p>
+                </div>
             </div>
-            <div class="price-tag">Costo estimado: $65</div>
-            <div class="percentage-tag activity-percentage"></div>
         </div>
-
-        <!-- Grupo de actividades D -->
-        <div class="activity-group-header" id="group-d">
-            <h3>Elaborar prototipo de interfaz de usuario (D.1 - D.2)</h3>
-            <div class="group-percentage"></div>
-        </div>
-
-        <div class="activity activity-d">
-            <h3>D.1 Wireframes</h3>
-            <p><strong>Cómo se hace:</strong> Diseñar esquemas básicos de cada pantalla mostrando disposición de elementos clave. Esbozar flujos de navegación principales. Obtener feedback temprano sobre usabilidad. Iterar basándose en comentarios de stakeholders.</p>
-            <div class="resources">
-                <p><strong>Recursos:</strong> Herramientas de wireframing (Figma, Sketch, Adobe XD), plantillas UI, pizarras digitales, sesiones de colaboración con usuarios.</p>
+        
+        <div class="activity-container">
+            <div class="activity-header">
+                <div>Actividad F: Desarrollo de Base de Datos</div>
+                <div>COP $8,640,000 <span class="percentage">6.29%</span></div>
             </div>
-            <div class="price-tag">Costo estimado: $48</div>
-            <div class="percentage-tag activity-percentage"></div>
-        </div>
-
-        <div class="activity activity-d">
-            <h3>D.2 Mockups interactivos</h3>
-            <p><strong>Cómo se hace:</strong> Transformar wireframes en diseños detallados con paleta de colores, tipografía e iconografía definitivas. Crear prototipos interactivos con enlaces entre pantallas. Realizar pruebas de usabilidad con usuarios representativos.</p>
-            <div class="resources">
-                <p><strong>Recursos:</strong> Software de diseño UI/UX (Figma, Adobe XD, InVision), bibliotecas de componentes, guías de estilo, herramientas de prototipado.</p>
+            <div class="activity-content">
+                <div class="subactivity">
+                    <div class="subactivity-header">
+                        <div>F.1 Modelo de datos</div>
+                        <div>COP $4,320,000 <span class="percentage">3.15%</span></div>
+                    </div>
+                    <p>Identificación de entidades principales y creación de diagramas entidad-relación.</p>
+                    <p><strong>Recursos:</strong> Tiempo de 3 desarrolladores durante 1 semana, herramientas de modelado ya disponibles como lucid-chart.</p>
+                </div>
+                <div class="subactivity">
+                    <div class="subactivity-header">
+                        <div>F.2 Implementación de esquemas</div>
+                        <div>COP $4,320,000 <span class="percentage">3.15%</span></div>
+                    </div>
+                    <p>Traducción de modelos conceptuales a scripts SQL y creación de tablas e índices.</p>
+                    <p><strong>Recursos:</strong> Tiempo de 3 desarrolladores durante 1.8 semanas, sistema de gestión de base de datos open source.</p>
+                </div>
             </div>
-            <div class="price-tag">Costo estimado: $80</div>
-            <div class="percentage-tag activity-percentage"></div>
         </div>
-
-        <!-- Grupo de actividades E -->
-        <div class="activity-group-header" id="group-e">
-            <h3>Configurar el entorno de desarrollo (E.1 - E.3)</h3>
-            <div class="group-percentage"></div>
-        </div>
-
-        <div class="activity activity-e">
-            <h3>E.1 Instalación de herramientas</h3>
-            <p><strong>Cómo se hace:</strong> Configurar entornos de desarrollo local para todos los miembros del equipo. Instalar IDEs, herramientas de control de versiones, frameworks y dependencias necesarias. Documentar el proceso para futuros miembros.</p>
-            <div class="resources">
-                <p><strong>Recursos:</strong> Guías de instalación, licencias de software, herramientas de virtualización, gestores de paquetes, documentación interna.</p>
+        
+        <div class="activity-container">
+            <div class="activity-header">
+                <div>Actividad G: Desarrollo de Algoritmos Core</div>
+                <div>COP $14,760,000 <span class="percentage">10.75%</span></div>
             </div>
-            <div class="price-tag">Costo estimado: $22</div>
-            <div class="percentage-tag activity-percentage"></div>
-        </div>
-
-        <div class="activity activity-e">
-            <h3>E.2 Configuración de servidores</h3>
-            <p><strong>Cómo se hace:</strong> Aprovisionar servidores para entornos de desarrollo, pruebas y producción. Configurar sistemas operativos, servicios web, bases de datos y seguridad. Implementar estrategias de copia de seguridad y recuperación.</p>
-            <div class="resources">
-                <p><strong>Recursos:</strong> Servicios cloud (AWS, Azure, GCP), herramientas de IaC (Terraform, Ansible), conocimientos de administración de sistemas, documentación técnica.</p>
+            <div class="activity-content">
+                <div class="subactivity">
+                    <div class="subactivity-header">
+                        <div>G.1 Algoritmos de gestión de filas</div>
+                        <div>COP $5,040,000 <span class="percentage">3.67%</span></div>
+                    </div>
+                    <p>Diseño de lógica para manejo y avance de colas, con optimización de tiempos de espera.</p>
+                    <p><strong>Recursos:</strong> Tiempo de 3.5 desarrolladores durante 1.5 semanas, librerías de algoritmos gratuitas.</p>
+                </div>
+                <div class="subactivity">
+                    <div class="subactivity-header">
+                        <div>G.2 Sistema de asignación de turnos</div>
+                        <div>COP $4,320,000 <span class="percentage">3.15%</span></div>
+                    </div>
+                    <p>Implementación de mecanismos para generar identificadores únicos de turnos.</p>
+                    <p><strong>Recursos:</strong> Tiempo de 3 desarrolladores durante 1.8 semanas.</p>
+                </div>
+                <div class="subactivity">
+                    <div class="subactivity-header">
+                        <div>G.3 Algoritmos de priorización</div>
+                        <div>COP $5,400,000 <span class="percentage">3.93%</span></div>
+                    </div>
+                    <p>Diseño de reglas para identificar casos prioritarios con lógica de ponderación.</p>
+                    <p><strong>Recursos:</strong> Tiempo de 3 desarrolladores durante 1 semana, consultoría interna con expertos en procesos.</p>
+                </div>
             </div>
-            <div class="price-tag">Costo estimado: $55</div>
-            <div class="percentage-tag activity-percentage"></div>
         </div>
-
-        <div class="activity activity-e">
-            <h3>E.3 Configuración de repositorios</h3>
-            <p><strong>Cómo se hace:</strong> Crear estructura de repositorios de código. Definir rama principal y ramas de desarrollo. Establecer políticas de revisión de código y fusión. Configurar CI/CD para automatizar pruebas y despliegues.</p>
-            <div class="resources">
-                <p><strong>Recursos:</strong> Plataformas de gestión de repositorios (GitHub, GitLab, Bitbucket), herramientas CI/CD (Jenkins, GitHub Actions), documentación sobre flujos de trabajo Git.</p>
+        
+        <div class="activity-container">
+            <div class="activity-header">
+                <div>Actividad H: Desarrollo de Módulos Administrativos</div>
+                <div>COP $10,080,000 <span class="percentage">7.34%</span></div>
             </div>
-            <div class="price-tag">Costo estimado: $30</div>
-            <div class="percentage-tag activity-percentage"></div>
-        </div>
-
-        <!-- Grupo de actividades F -->
-        <div class="activity-group-header" id="group-f">
-            <h3>Diseñar la estructura de la base de datos (F.1 - F.2)</h3>
-            <div class="group-percentage"></div>
-        </div>
-
-        <div class="activity activity-f">
-            <h3>F.1 Modelo de datos</h3>
-            <p><strong>Cómo se hace:</strong> Identificar entidades principales (usuarios, turnos, servicios). Definir relaciones y cardinalidad. Crear diagramas entidad-relación. Normalizar esquemas para optimizar almacenamiento y rendimiento.</p>
-            <div class="resources">
-                <p><strong>Recursos:</strong> Herramientas de modelado de datos (MySQL Workbench, pgModeler), sistemas de gestión de bases de datos, documentación de requisitos, expertos en datos.</p>
+            <div class="activity-content">
+                <div class="subactivity">
+                    <div class="subactivity-header">
+                        <div>H.1 Desarrollo de panel de control</div>
+                        <div>COP $6,120,000 <span class="percentage">4.46%</span></div>
+                    </div>
+                    <p>Creación de interfaces administrativas con dashboards analíticos en tiempo real.</p>
+                    <p><strong>Recursos:</strong> Tiempo de 3 desarrolladores durante 2.5 semanas, bibliotecas de gráficos open source.</p>
+                </div>
+                <div class="subactivity">
+                    <div class="subactivity-header">
+                        <div>H.2 Gestión de operadores</div>
+                        <div>COP $3,960,000 <span class="percentage">2.88%</span></div>
+                    </div>
+                    <p>Desarrollo de módulos para administrar cuentas de operadores y control de acceso.</p>
+                    <p><strong>Recursos:</strong> Tiempo de 2.75 desarrolladores durante 1.5 semanas, framework de autenticación ya disponible.</p>
+                </div>
             </div>
-            <div class="price-tag">Costo estimado: $58</div>
-            <div class="percentage-tag activity-percentage"></div>
         </div>
-
-        <div class="activity activity-f">
-            <h3>F.2 Implementación de esquemas</h3>
-            <p><strong>Cómo se hace:</strong> Traducir modelos conceptuales a scripts SQL. Crear tablas, índices, restricciones y procedimientos almacenados. Implementar migraciones para control de versiones. Preparar datos iniciales y de prueba.</p>
-            <div class="resources">
-                <p><strong>Recursos:</strong> Sistemas de gestión de bases de datos (PostgreSQL, MySQL), herramientas ORM, frameworks de migración, scripts de carga de datos.</p>
+        
+        <div class="activity-container">
+            <div class="activity-header">
+                <div>Actividad I: Sistema de Notificaciones</div>
+                <div>COP $7,920,000 <span class="percentage">5.77%</span></div>
             </div>
-            <div class="price-tag">Costo estimado: $50</div>
-            <div class="percentage-tag activity-percentage"></div>
-        </div>
-
-        <!-- Grupo de actividades G -->
-        <div class="activity-group-header" id="group-g">
-            <h3>Implementar lógica de gestión de turnos y filas (G.1 - G.3)</h3>
-            <div class="group-percentage"></div>
-        </div>
-
-        <div class="activity activity-g">
-            <h3>G.1 Algoritmos de gestión de filas</h3>
-            <p><strong>Cómo se hace:</strong> Diseñar lógica para manejar formación y avance de colas. Implementar manejo de excepciones (turnos perdidos, interrupciones). Optimizar para minimizar tiempos de espera globales. Probar con conjuntos de datos simulados.</p>
-            <div class="resources">
-                <p><strong>Recursos:</strong> Lenguajes de programación (Python, Java), bibliotecas matemáticas, herramientas de simulación, documentación sobre teoría de colas.</p>
+            <div class="activity-content">
+                <div class="subactivity">
+                    <div class="subactivity-header">
+                        <div>I.1 Sistema de notificaciones push</div>
+                        <div>COP $3,960,000 <span class="percentage">2.88%</span></div>
+                    </div>
+                    <p>Implementación de infraestructura para envío de notificaciones en tiempo real.</p>
+                    <p><strong>Recursos:</strong> Tiempo de 2.75 desarrolladores durante 1.5 semanas, servicio Firebase (tier de pago).</p>
+                </div>
+                <div class="subactivity">
+                    <div class="subactivity-header">
+                        <div>I.2 Integraciones con SMS/email</div>
+                        <div>COP $3,960,000 <span class="percentage">2.88%</span></div>
+                    </div>
+                    <p>Conexión con APIs de proveedores de mensajería y desarrollo de plantillas.</p>
+                    <p><strong>Recursos:</strong> Tiempo de 2.75 desarrolladores durante 1 semana, créditos iniciales de servicios SMS/email.</p>
+                </div>
             </div>
-            <div class="price-tag">Costo estimado: $90</div>
-            <div class="percentage-tag activity-percentage"></div>
         </div>
-
-        <div class="activity activity-g">
-            <h3>G.2 Sistema de asignación de turnos</h3>
-            <p><strong>Cómo se hace:</strong> Implementar mecanismos para generar identificadores únicos de turnos. Desarrollar interfaces para solicitud de turnos por diferentes canales. Crear sistema de confirmación y recordatorios. Gestionar cancelaciones y reprogramaciones.</p>
-            <div class="resources">
-                <p><strong>Recursos:</strong> Frameworks de desarrollo, APIs de comunicación, herramientas de generación de códigos QR, sistemas de notificación.</p>
+        
+        <div class="activity-container">
+            <div class="activity-header">
+                <div>Actividad J: Desarrollo Frontend</div>
+                <div>COP $11,160,000 <span class="percentage">8.13%</span></div>
             </div>
-            <div class="price-tag">Costo estimado: $100</div>
-            <div class="percentage-tag activity-percentage"></div>
-        </div>
-
-        <div class="activity activity-g">
-            <h3>G.3 Algoritmos de priorización</h3>
-            <p><strong>Cómo se hace:</strong> Diseñar reglas para identificar casos prioritarios. Implementar lógica de ponderación de factores (tipo de cliente, urgencia, tiempo de espera). Crear mecanismos de override manual para excepciones. Validar con simulaciones de carga.</p>
-            <div class="resources">
-                <p><strong>Recursos:</strong> Herramientas de análisis de datos, frameworks para reglas de negocio, simuladores de eventos discretos, reuniones con stakeholders para definir prioridades.</p>
+            <div class="activity-content">
+                <div class="subactivity">
+                    <div class="subactivity-header">
+                        <div>J.1 Desarrollo frontend web</div>
+                        <div>COP $5,580,000 <span class="percentage">4.06%</span></div>
+                    </div>
+                    <p>Implementación de interfaces de usuario basadas en mockups aprobados.</p>
+                    <p><strong>Recursos:</strong> Tiempo de 2 desarrolladores durante 2 semanas, frameworks frontend open source, librerías de componentes gratuitas.</p>
+                </div>
+                <div class="subactivity">
+                    <div class="subactivity-header">
+                        <div>J.2 Desarrollo app móvil</div>
+                        <div>COP $5,580,000 <span class="percentage">4.06%</span></div>
+                    </div>
+                    <p>Creación de aplicaciones nativas o híbridas para iOS y Android.</p>
+                    <p><strong>Recursos:</strong> Tiempo de 2 desarrolladores durante 2 semanas, framework React Native (pago), licencia de desarrollador Android: $25 USD pago único / iOS:$99 USD al año.</p>
+                </div>
             </div>
-            <div class="price-tag">Costo estimado: $85</div>
-            <div class="percentage-tag activity-percentage"></div>
         </div>
-
-        <!-- Grupo de actividades H -->
-        <div class="activity-group-header" id="group-h">
-            <h3>Desarrollar sistema para operadores (H.1 - H.2)</h3>
-            <div class="group-percentage"></div>
-        </div>
-
-        <div class="activity activity-h">
-            <h3>H.1 Desarrollo de panel de control</h3>
-            <p><strong>Cómo se hace:</strong> Crear interfaces administrativas con dashboards analíticos. Implementar visualizaciones de datos en tiempo real. Desarrollar herramientas de configuración de parámetros. Añadir funcionalidades de reportes y exportación de datos.</p>
-            <div class="resources">
-                <p><strong>Recursos:</strong> Frameworks frontend (React, Angular, Vue), bibliotecas de visualización (D3.js, Chart.js), herramientas de diseño UI, APIs para exportación de datos.</p>
+        
+        <div class="activity-container">
+            <div class="activity-header">
+                <div>Actividad K: Desarrollo Backend</div>
+                <div>COP $7,020,000 <span class="percentage">5.11%</span></div>
             </div>
-            <div class="price-tag">Costo estimado: $15</div>
-            <div class="percentage-tag activity-percentage"></div>
-        </div>
-
-        <div class="activity activity-h">
-            <h3>H.2 Gestión de operadores</h3>
-            <p><strong>Cómo se hace:</strong> Desarrollar módulos para crear y administrar cuentas de operadores. Implementar control de acceso basado en roles. Diseñar interfaces para asignar tareas y monitorear productividad. Crear sistema de sesiones y turnos de trabajo.</p>
-            <div class="resources">
-                <p><strong>Recursos:</strong> Frameworks de autenticación, sistemas de gestión de identidad, bibliotecas de encriptación, APIs de calendario y agenda.</p>
+            <div class="activity-content">
+                <div class="subactivity">
+                    <div class="subactivity-header">
+                        <div>K.1 Desarrollo de endpoints</div>
+                        <div>COP $3,780,000 <span class="percentage">2.75%</span></div>
+                    </div>
+                    <p>Diseño e implementación de APIs RESTful o GraphQL.</p>
+                    <p><strong>Recursos:</strong> Tiempo de 3 desarrolladores durante 1 semana, frameworks backend open source.</p>
+                </div>
+                <div class="subactivity">
+                    <div class="subactivity-header">
+                        <div>K.2 Integración y pruebas de API</div>
+                        <div>COP $3,240,000 <span class="percentage">2.36%</span></div>
+                    </div>
+                    <p>Verificación de comunicación entre frontend y backend con pruebas automatizadas.</p>
+                    <p><strong>Recursos:</strong> Tiempo de 3 desarrolladores durante 1 semana, herramientas de testing automatizado gratuitas.</p>
+                </div>
             </div>
-            <div class="price-tag">Costo estimado: $100</div>
-            <div class="percentage-tag activity-percentage"></div>
         </div>
-
-        <!-- Grupo de actividades I -->
-        <div class="activity-group-header" id="group-i">
-            <h3> Integrar sistema de notificaciones en tiempo real (I.1 - I.2)</h3>
-            <div class="group-percentage"></div>
-        </div>
-
-        <div class="activity activity-i">
-            <h3>I.1 Sistema de notificaciones push</h3>
-            <p><strong>Cómo se hace:</strong> Implementar infraestructura para envío de notificaciones en tiempo real. Desarrollar mecanismos de suscripción para navegadores y apps. Crear plantillas de mensajes personalizables. Configurar sistema de seguimiento de entrega y lectura.</p>
-            <div class="resources">
-                <p><strong>Recursos:</strong> Servicios de notificaciones push (Firebase Cloud Messaging, OneSignal), WebSockets, servicios de mensajería en tiempo real, herramientas de seguimiento de eventos.</p>
+        
+        <!-- Aquí termina el punto de control, las siguientes actividades son para referencia del presupuesto total -->
+        
+        <div class="activity-container" style="opacity: 0.6;">
+            <div class="activity-header">
+                <div>Actividad L: Testing y QA</div>
+                <div>COP $12,420,000 <span class="percentage">9.05%</span></div>
             </div>
-            <div class="price-tag">Costo estimado: $90</div>
-            <div class="percentage-tag activity-percentage"></div>
-        </div>
-
-        <div class="activity activity-i">
-            <h3>I.2 Integraciones con SMS/email</h3>
-            <p><strong>Cómo se hace:</strong> Conectar con APIs de proveedores de mensajería. Desarrollar sistema de plantillas para diferentes tipos de comunicación. Implementar mecanismos de reintento y verificación de entrega. Configurar límites de envío para prevenir spam.</p>
-            <div class="resources">
-                <p><strong>Recursos:</strong> Servicios de envío de SMS (Twilio, Nexmo), proveedores de email transaccional (SendGrid, Mailgun), herramientas de templating, sistemas de colas para mensajes.</p>
+            <div class="activity-content">
+                <p style="font-style: italic; text-align: center;">Esta actividad está fuera del punto de control al 2 de agosto.</p>
             </div>
-            <div class="price-tag">Costo estimado: $70</div>
-            <div class="percentage-tag activity-percentage"></div>
         </div>
-
-        <!-- Grupo de actividades J -->
-        <div class="activity-group-header" id="group-j">
-            <h3>Desarrollar interfaz de usuario web y móvil (J.1 - J.2)</h3>
-            <div class="group-percentage"></div>
-        </div>
-
-        <div class="activity activity-j">
-            <h3>J.1 Desarrollo frontend web</h3>
-            <p><strong>Cómo se hace:</strong> Implementar interfaces de usuario basadas en mockups aprobados. Desarrollar componentes reutilizables. Integrar con APIs backend. Optimizar para diferentes tamaños de pantalla y navegadores. Implementar pruebas de UI automatizadas.</p>
-            <div class="resources">
-                <p><strong>Recursos:</strong> Frameworks JavaScript (React, Angular, Vue), preprocesadores CSS, herramientas de bundling, bibliotecas de componentes UI, herramientas de testing frontend.</p>
+        
+        <div class="activity-container" style="opacity: 0.6;">
+            <div class="activity-header">
+                <div>Actividad M: Optimización</div>
+                <div>COP $8,100,000 <span class="percentage">5.90%</span></div>
             </div>
-            <div class="price-tag">Costo estimado: $22</div>
-            <div class="percentage-tag activity-percentage"></div>
-        </div>
-
-        <div class="activity activity-j">
-            <h3>J.2 Desarrollo app móvil</h3>
-            <p><strong>Cómo se hace:</strong> Crear aplicaciones nativas o híbridas para iOS y Android. Implementar interfaces adaptadas a directrices de cada plataforma. Integrar funcionalidades específicas (notificaciones push, geolocalización). Optimizar para diferentes dispositivos y tamaños de pantalla.</p>
-            <div class="resources">
-                <p><strong>Recursos:</strong> Frameworks de desarrollo móvil (React Native, Flutter, Swift, Kotlin), herramientas de diseño UI móvil, APIs nativas, entornos de desarrollo móvil.</p>
+            <div class="activity-content">
+                <p style="font-style: italic; text-align: center;">Esta actividad está fuera del punto de control al 2 de agosto.</p>
             </div>
-            <div class="price-tag">Costo estimado: $32</div>
-            <div class="percentage-tag activity-percentage"></div>
         </div>
-
-        <!-- Grupo de actividades K -->
-        <div class="activity-group-header" id="group-k">
-            <h3>Conectar frontend con backend mediante API (K.1 - K.2)</h3>
-            <div class="group-percentage"></div>
-        </div>
-
-        <div class="activity activity-k">
-            <h3>K.1 Desarrollo de endpoints</h3>
-            <p><strong>Cómo se hace:</strong> Diseñar e implementar APIs RESTful o GraphQL. Crear endpoints para todas las operaciones necesarias. Documentar interfaces con especificaciones estándar. Implementar validación de entradas y manejo de errores.</p>
-            <div class="resources">
-                <p><strong>Recursos:</strong> Frameworks backend (Express, Django, Spring), herramientas de documentación API (Swagger, ReDoc), validadores de esquemas, metodologías de diseño API.</p>
+        
+        <div class="activity-container" style="opacity: 0.6;">
+            <div class="activity-header">
+                <div>Actividad N: Despliegue</div>
+                <div>COP $6,480,000 <span class="percentage">4.72%</span></div>
             </div>
-            <div class="price-tag">Costo estimado: $18</div>
-            <div class="percentage-tag activity-percentage"></div>
-        </div>
-
-        <div class="activity activity-k">
-            <h3>K.2 Integración y pruebas de API</h3>
-            <p><strong>Cómo se hace:</strong> Verificar comunicación entre frontend y backend. Implementar pruebas automatizadas de endpoints. Validar respuestas, códigos de estado y formatos de datos. Simular condiciones de error y casos límite.</p>
-            <div class="resources">
-                <p><strong>Recursos:</strong> Herramientas de testing API (Postman, Insomnia), frameworks de testing (Jest, Mocha, PyTest), herramientas de mock, entornos de integración continua.</p>
+            <div class="activity-content">
+                <p style="font-style: italic; text-align: center;">Esta actividad está fuera del punto de control al 2 de agosto.</p>
             </div>
-            <div class="price-tag">Costo estimado: $10</div>
-            <div class="percentage-tag activity-percentage"></div>
         </div>
-
-<button id="toggle-actividades-l-p" class="btn btn-primary mb-4">
-    Mostrar actividades L-P
-</button>
-
-
-
-        <!-- Punto de control -->
-        <div class="checkpoint">
-            <h3>Resto de activididades</h3>
-<div class="activity activity-l">
-    <h3>L.1 Pruebas unitarias</h3>
-
-
-    <p><strong>Cómo se hace:</strong> Desarrollar tests para funciones y componentes individuales. Implementar mocks y stubs para aislar dependencias. Medir cobertura de código. Automatizar ejecución en pipeline de CI/CD. Resolver problemas identificados.</p>
-    <div class="resources">
-        <p><strong>Recursos:</strong> Frameworks de testing unitario (Jest, JUnit, PyTest), herramientas de cobertura de código, bibliotecas de mocking, plataformas CI/CD.</p>
+        
+        <div class="activity-container" style="opacity: 0.6;">
+            <div class="activity-header">
+                <div>Actividad O: Capacitación</div>
+                <div>COP $5,400,000 <span class="percentage">3.93%</span></div>
+            </div>
+            <div class="activity-content">
+                <p style="font-style: italic; text-align: center;">Esta actividad está fuera del punto de control al 2 de agosto.</p>
+            </div>
+        </div>
+        
+        <div class="activity-container" style="opacity: 0.6;">
+            <div class="activity-header">
+                <div>Actividad P: Soporte y Mantenimiento</div>
+                <div>COP $8,910,000 <span class="percentage">6.49%</span></div>
+            </div>
+            <div class="activity-content">
+                <p style="font-style: italic; text-align: center;">Esta actividad está fuera del punto de control al 2 de agosto.</p>
+            </div>
+        </div>
+        
+        <!-- Resumen y Gráficos -->
+        <h2>Resumen del Presupuesto</h2>
+        
+        <div class="summary-container">
+            <div class="summary-info">
+                <h3>Presupuesto Total del Proyecto (A-P)</h3>
+                <div class="key-indicator">
+                    <div>Presupuesto total (100%):</div>
+                    <div class="cost">COP $137,310,000</div>
+                </div>
+        
+                <div class="divider"></div>
+        
+                <h3>Punto de Control (A-K2)</h3>
+                <div class="key-indicator highlight-row">
+                    <div>Presupuesto punto de control:</div>
+                    <div class="cost">COP $96,000,000</div>
+                </div>
+                <div class="key-indicator">
+                    <div>Porcentaje del presupuesto total:</div>
+                    <div><strong>69.91%</strong></div>
+                </div>
+        
+                <div class="total-box">
+                    <div>Presupuesto Punto de Control (2 de agosto)</div>
+                    <div class="total-amount">COP $96,000,000</div>
+                    <div>69.91% del presupuesto total</div>
+                </div>
+            </div>
+        
+            <div class="chart-container">
+                <canvas id="presupuestoChart"></canvas>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Presupuesto actualizado el 7 de mayo de 2025 | Sistema de Gestión de Filas (SILAS)</p>
+        </footer>
+        
     </div>
-    <div>Costo estimado: $9</div>
-</div>
-
-<div class="activity activity-l">
-    <h3>L.2 Pruebas de integración</h3>
-    <p><strong>Cómo se hace:</strong> Verificar interacción correcta entre componentes y sistemas. Implementar pruebas end-to-end de flujos principales. Configurar entornos de testing que emulen producción. Automatizar escenarios complejos con múltiples actores.</p>
-    <div class="resources">
-        <p><strong>Recursos:</strong> Herramientas de testing e2e (Cypress, Selenium), entornos de integración, bases de datos de prueba, servicios de CI/CD.</p>
-    </div>
-    <div>Costo estimado: $12</div>
-</div>
-
-<div class="activity activity-l">
-    <h3>L.3 Pruebas de aceptación</h3>
-    <p><strong>Cómo se hace:</strong> Organizar sesiones con usuarios reales o representantes. Documentar criterios de aceptación para cada historia de usuario. Verificar cumplimiento de requisitos desde perspectiva del usuario final. Recopilar y priorizar feedback.</p>
-    <div class="resources">
-        <p><strong>Recursos:</strong> Herramientas de gestión de pruebas, checklist de validación, usuarios beta, formularios de feedback, herramientas de grabación de sesiones.</p>
-    </div>
-    <div>Costo estimado: $80</div>
-</div>
-
-<div class="activity activity-m">
-    <h3>M.1 Auditoría de seguridad</h3>
-    <p><strong>Cómo se hace:</strong> Realizar análisis de vulnerabilidades en código y configuraciones. Implementar pruebas de penetración. Verificar protección contra ataques comunes (XSS, CSRF, inyección SQL). Revisar prácticas de autenticación y autorización. Documentar y resolver problemas encontrados.</p>
-    <div class="resources">
-        <p><strong>Recursos:</strong> Herramientas de análisis estático de código, scanners de vulnerabilidades, frameworks de pentest, guías de seguridad (OWASP), consultores de seguridad.</p>
-    </div>
-    <div>Costo estimado: $15</div>
-</div>
-
-<div class="activity activity-m">
-    <h3>M.2 Optimización de rendimiento</h3>
-    <p><strong>Cómo se hace:</strong> Identificar cuellos de botella con herramientas de profiling. Optimizar consultas de base de datos y algoritmos críticos. Implementar técnicas de caché. Realizar pruebas de carga y estrés. Configurar escalado horizontal/vertical según necesidades.</p>
-    <div class="resources">
-        <p><strong>Recursos:</strong> Herramientas de profiling y monitoreo, software de pruebas de carga (JMeter, Locust), servicios de caché, herramientas de análisis de rendimiento de bases de datos.</p>
-    </div>
-    <div>Costo estimado: $13</div>
-</div>
-
-<div class="activity activity-n">
-    <h3>N.1 Configuración de servidores</h3>
-    <p><strong>Cómo se hace:</strong> Preparar infraestructura de producción según especificaciones. Configurar balanceadores de carga, firewalls y sistemas de respaldo. Implementar monitoreo y alertas. Documentar topología y procedimientos operativos.</p>
-    <div class="resources">
-        <p><strong>Recursos:</strong> Servicios cloud (AWS, Azure, GCP), herramientas de IaC, sistemas de orquestación (Kubernetes, Docker Swarm), herramientas de monitoreo (Prometheus, Grafana).</p>
-    </div>
-    <div>Costo estimado: $12</div>
-</div>
-
-<div class="activity activity-n">
-    <h3>N.2 Despliegue en producción</h3>
-    <p><strong>Cómo se hace:</strong> Implementar estrategia de despliegue (blue-green, canary). Migrar datos necesarios. Configurar dominios y certificados. Realizar validaciones post-despliegue. Preparar plan de contingencia para rollback si es necesario.</p>
-    <div class="resources">
-        <p><strong>Recursos:</strong> Herramientas de CI/CD, sistemas de gestión de configuración, servicios DNS, proveedores de certificados SSL, checklists de despliegue.</p>
-    </div>
-    <div>Costo estimado: $12</div>
-</div>
-
-<div class="activity activity-o">
-    <h3>O.1 Preparación de materiales</h3>
-    <p><strong>Cómo se hace:</strong> Desarrollar manuales de usuario, guías rápidas y videos tutoriales. Crear documentación técnica para administradores. Preparar presentaciones para diferentes audiencias. Traducir materiales según necesidades regionales.</p>
-    <div class="resources">
-        <p><strong>Recursos:</strong> Herramientas de documentación, software de edición de video, plataformas e-learning, servicios de traducción, plantillas corporativas.</p>
-    </div>
-     <div>Costo estimado: $7</div>
-</div>
-
-<div class="activity activity-o">
-    <h3>O.2 Sesiones de capacitación</h3>
-    <p><strong>Cómo se hace:</strong> Organizar entrenamientos presenciales o virtuales. Preparar ejercicios prácticos y casos de uso reales. Recopilar preguntas frecuentes. Evaluar comprensión mediante pruebas. Proporcionar soporte post-capacitación.</p>
-    <div class="resources">
-        <p><strong>Recursos:</strong> Plataformas de videoconferencia, entornos de prueba, materiales impresos, formularios de evaluación, equipo de formadores.</p>
-    </div>
-    <div>Costo estimado: $80</div>
-</div>
-
-<div class="activity activity-p">
-    <h3>P.1 Configuración de monitoreo</h3>
-    <p><strong>Cómo se hace:</strong> Implementar sistemas de observabilidad (logs, métricas, trazas). Configurar dashboards operativos. Establecer umbrales para alertas. Crear procedimientos de respuesta a incidentes. Programar revisiones periódicas de rendimiento.</p>
-    <div class="resources">
-        <p><strong>Recursos:</strong> Herramientas de monitoreo (Prometheus, Grafana, ELK Stack), servicios de alerta, sistemas de tickets, documentación de procedimientos operativos.</p>
-    </div>
-    <div class="price-tag">Costo estimado: $50</div>
-    <div>Costo estimado: $50</div>
-</div>
-
-<div class="activity activity-p">
-    <h3>P.2 Recolección de feedback</h3>
-    <p><strong>Cómo se hace:</strong> Implementar mecanismos de retroalimentación dentro de la aplicación. Realizar encuestas de satisfacción periódicas. Organizar grupos focales con usuarios clave. Analizar métricas de uso. Priorizar sugerencias según impacto y esfuerzo.</p>
-    <div class="resources">
-        <p><strong>Recursos:</strong> Herramientas de encuestas, software de análisis cualitativo, plataformas de gestión de feedback, herramientas de analítica.</p>
-    </div>
-    <div>Costo estimado: $70</div>
-</div>
-
-<div class="activity activity-p">
-    <h3>P.3 Implementación de mejoras</h3>
-    <p><strong>Cómo se hace:</strong> Planificar ciclos de mejora continua basados en feedback y datos de uso. Priorizar cambios según impacto y recursos disponibles. Implementar, probar y desplegar actualizaciones. Comunicar nuevas funcionalidades a usuarios.</p>
-    <div class="resources">
-        <p><strong>Recursos:</strong> Herramientas de gestión de proyectos ágiles, sistemas de control de versiones, entornos de desarrollo/prueba, canales de comunicación con usuarios.</p>
-    </div>
-    <div>Costo estimado: $100</div>
-</div>
-
-    <!-- Bootstrap JS y dependencias -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.2/js/bootstrap.min.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const tasaCambio = 4000; // Tasa COP -> USD (inversa de la original)
-
-    const botonToggle = document.getElementById('toggle-actividades-l-p');
-    const actividades = document.querySelectorAll('.activity');
-    const priceTags = document.querySelectorAll('.price-tag');
-    const grupos = {}; // Guardar sumas por grupo (A, B, C, etc.)
-    const activities = [];
-
-    let total = 0;
-    let dentroPuntoControl = true;
-
-    // --- Inicializar: Ocultar actividades L-P al cargar ---
-    actividades.forEach(activity => {
-        const nombreActividad = activity.querySelector('h3').textContent.trim();
-        const letraGrupo = nombreActividad.charAt(0).toUpperCase();
-
-        if (letraGrupo >= 'L' && letraGrupo <= 'P') {
-            activity.classList.add('d-none'); // Ocultar al cargar
-        }
-    });
-
-    // --- Botón Mostrar/Ocultar dinámico ---
-    if (botonToggle) {
-        botonToggle.addEventListener('click', function() {
-            let visibles = false;
-
-            actividades.forEach(activity => {
-                const nombreActividad = activity.querySelector('h3').textContent.trim();
-                const letraGrupo = nombreActividad.charAt(0).toUpperCase();
-
-                if (letraGrupo >= 'L' && letraGrupo <= 'P') {
-                    activity.classList.toggle('d-none');
-                    visibles = !activity.classList.contains('d-none');
+    
+    <script>
+        const ctx = document.getElementById('presupuestoChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K'],
+                datasets: [{
+                    label: 'Porcentaje del Presupuesto',
+                    data: [6.21, 4.72, 5.11, 5.51, 4.98, 6.29, 10.75, 7.34, 5.77, 8.13, 5.11],
+                    backgroundColor: '#3498db',
+                    borderColor: '#2980b9',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
                 }
-            });
-
-            botonToggle.textContent = visibles ? 'Ocultar actividades L-P' : 'Mostrar actividades L-P';
-        });
-    }
-
-    // --- Nuevos montos desde lol.txt ---
-    const presupuestoCOP = {
-        'A.1': 1200000,
-        'A.2': 1500000,
-        'A.3': 2100000,
-        'A.4': 1750000,
-        'B.1': 2000000,
-        'B.2': 2900000,
-        'C.1': 2600000,
-        'C.2': 3250000,
-        'D.1': 2400000,
-        'D.2': 4000000,
-        'E.1': 1100000,
-        'E.2': 2750000,
-        'E.3': 1500000,
-        'F.1': 2900000,
-        'F.2': 2500000,
-        'G.1': 4500000,
-        'G.2': 5000000,
-        'G.3': 4250000,
-        'H.1': 3750000,
-        'H.2': 5000000,
-        'I.1': 4500000,
-        'I.2': 3500000,
-        'J.1': 4600000,
-        'J.2': 5200000,
-        'K.1': 4600000,
-        'K.2': 3000000  // Estimado ya que no aparece en lol.txt
-    };
-
-    // --- Procesar actividades y calcular costos ---
-    priceTags.forEach(tag => {
-        const activityDiv = tag.closest('.activity');
-        const activityName = activityDiv.querySelector('h3').textContent.trim();
-        const activityCode = activityName.split(' ')[0]; // Obtiene "A.1", "B.2", etc.
-        const groupLetter = activityCode.charAt(0).toUpperCase();
-
-        // Verifica si estamos en punto de control (A-K)
-        if (groupLetter > 'K') dentroPuntoControl = false;
-
-        // Obtiene o estima el precio en COP
-        let precioCOP = presupuestoCOP[activityCode] || 0;
-
-        // Calcula precio USD
-        let precioUSD = Math.round(precioCOP / tasaCambio);
-
-        // Actualiza el tag de precio con ambas monedas
-        tag.innerHTML = `Costo estimado: $${precioUSD.toLocaleString('en-US')} <span class="text-muted ml-2" style="font-size: 0.9em;">($${precioCOP.toLocaleString('es-CO')} COP)</span>`;
-
-        activities.push({
-            group: groupLetter,
-            priceCOP: precioCOP,
-            priceUSD: precioUSD,
-            tag: tag,
-            activityDiv: activityDiv,
-            activityName: activityName,
-            activityCode: activityCode,
-            dentroPuntoControl: dentroPuntoControl
-        });
-
-        // Acumular costos por grupo dentro del punto de control
-        if (dentroPuntoControl) {
-            total += precioUSD;
-            grupos[groupLetter] = (grupos[groupLetter] || 0) + precioUSD;
-        }
-    });
-
-    // --- Mostrar % y costo total de cada grupo ---
-    for (const [grupo, costoGrupoUSD] of Object.entries(grupos)) {
-        const porcentajeGrupo = (costoGrupoUSD / total) * 100;
-        const costoGrupoCOP = costoGrupoUSD * tasaCambio;
-
-        const groupHeader = document.querySelector(`#group-${grupo.toLowerCase()} .group-percentage`);
-        if (groupHeader) {
-            groupHeader.innerHTML = `
-                <div class="percentage-tag mb-2">
-                    ${porcentajeGrupo.toFixed(2)}% del costo total
-                </div>
-                <div class="text-muted small">
-                    USD: $${costoGrupoUSD.toLocaleString('en-US')} <br>
-                    COP: $${costoGrupoCOP.toLocaleString('es-CO')}
-                </div>
-            `;
-        }
-    }
-
-    // --- Mostrar % por actividad respecto a su grupo ---
-    activities.forEach(activity => {
-        if (grupos[activity.group] && activity.dentroPuntoControl) {
-            const porcentajeActividad = (activity.priceUSD / grupos[activity.group]) * 100;
-            const porcentajeTotal = (activity.priceUSD / total) * 100;
-
-            const porcentajeDiv = activity.activityDiv.querySelector('.activity-percentage');
-            if (porcentajeDiv) {
-                porcentajeDiv.innerHTML = `
-                    ${porcentajeActividad.toFixed(2)}% del grupo ${activity.group} <br>
-                    <span class="text-muted small">${porcentajeTotal.toFixed(2)}% del presupuesto total</span>
-                `;
             }
+        });
+
+        const doughnutCtx = document.getElementById('doughnutChart').getContext('2d');
+        new Chart(doughnutCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Punto de Control (69.91%)', 'Restante (30.09%)'],
+                datasets: [{
+                    data: [65.59, 34.41],
+                    backgroundColor: ['#3498db', '#ecf0f1'],
+                    borderColor: ['#2980b9', '#bdc3c7'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Progreso del Presupuesto'
+                    },
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+    </script>
+
+ <button class="toggle-button" onclick="toggleBox()">Mostrar/Ocultar porcentajes por actividad</button>
+
+    <div id="actividadBox" class="toggle-box">
+✅ Actividad A: Total COP $8,520,000
+A.1 Encuestas a los usuarios: 14.08%
+A.2 Estudiar métodos actuales: 30.99%
+A.3 Definir funcionalidades específicas: 28.17%
+A.4 Documentar requerimientos: 26.76%
+
+✅ Actividad B: Total COP $6,480,000
+B.1 Estudio de competencia: 50.00%
+B.2 Análisis financiero: 50.00%
+
+✅ Actividad C: Total COP $7,020,000
+C.1 Casos de uso (Relación usuario-Software): 46.15%
+C.2 Diagramar estructura del sistema: 53.85%
+
+✅ Actividad D: Total COP $7,560,000
+D.1 Wireframes: 42.86%
+D.2 Mockups interactivos: 57.14%
+
+✅ Actividad E: Total COP $6,840,000
+E.1 Instalación de herramientas: 21.05%
+E.2 Configuración de servidores: 42.11%
+E.3 Configuración de repositorios: 36.84%
+
+✅ Actividad F: Total COP $8,640,000
+F.1 Modelo de datos: 50.00%
+F.2 Implementación de esquemas: 50.00%
+
+✅ Actividad G: Total COP $14,760,000
+G.1 Algoritmos de gestión de filas: 34.15%
+G.2 Sistema de asignación de turnos: 29.25%
+G.3 Algoritmos de priorización: 36.61%
+
+✅ Actividad H: Total COP $10,080,000
+H.1 Desarrollo de panel de control: 60.71%
+H.2 Gestión de operadores: 39.29%
+
+✅ Actividad I: Total COP $7,920,000
+I.1 Sistema de notificaciones push: 50.00%
+I.2 Integraciones con SMS/email: 50.00%
+
+✅ Actividad J: Total COP $11,160,000
+J.1 Desarrollo frontend web: 50.00%
+J.2 Desarrollo app móvil: 50.00%
+
+✅ Actividad K: Total COP $7,020,000
+K.1 Desarrollo de endpoints: 53.85%
+K.2 Integración y pruebas de API: 46.15%
+    </div>
+
+    <script>
+        function toggleBox() {
+            const box = document.getElementById('actividadBox');
+            box.style.display = (box.style.display === 'none' || box.style.display === '') ? 'block' : 'none';
         }
-    });
-
-    // --- Mostrar total del proyecto ---
-    const totalCOP = total * tasaCambio;
-    const container = document.querySelector('.container.content') || document.body;
-
-    // Verificar si ya existe un div de total para no duplicarlo
-    let totalDiv = document.querySelector('.total-project-cost');
-    if (!totalDiv) {
-        totalDiv = document.createElement('div');
-        totalDiv.classList.add('card', 'bg-light', 'mt-5', 'mb-5', 'total-project-cost');
-        totalDiv.innerHTML = `
-            <div class="card-body text-center">
-                <h3 class="card-title text-primary">Costo Total Estimado del Proyecto (Primeros 3.4 meses)</h3>
-                <div class="h4 mt-3 font-weight-bold text-success">
-                    USD: $${total.toLocaleString('en-US')}
-                </div>
-                <div class="h5 mt-2 text-muted">
-                    COP: $${totalCOP.toLocaleString('es-CO')}
-                </div>
-                <div class="mt-3 small text-muted">
-                    Incluye costos de desarrollo, herramientas y servicios adicionales
-                </div>
-            </div>
-        `;
-        container.appendChild(totalDiv);
-    }
-
-    // --- Agregar sección de costos de equipo de desarrollo si no existe ---
-    let devsCostSection = document.querySelector('.devs-cost-section');
-    if (!devsCostSection) {
-        devsCostSection = document.createElement('div');
-        devsCostSection.classList.add('devs-cost-section', 'card', 'mb-4');
-        devsCostSection.innerHTML = `
-            <div class="card-body">
-                <h3 class="text-center mb-3">Costos de Equipo de Desarrollo</h3>
-                <div class="row">
-                    <div class="col-md-6">
-                        <p><strong>Desarrolladores Junior:</strong> 4 personas</p>
-                        <p><strong>Salario mensual por desarrollador:</strong> $3,000,000 COP ($750 USD)</p>
-                        <p><strong>Salario mensual equipo completo:</strong> $12,000,000 COP ($3,000 USD)</p>
-                    </div>
-                    <div class="col-md-6">
-                        <p><strong>Duración del proyecto:</strong> 3.4 meses</p>
-                        <p><strong>Costo total equipo de desarrollo:</strong> $40,800,000 COP ($10,200 USD)</p>
-                        <p><strong>Nota:</strong> Los costos de las actividades incluyen materiales, herramientas y servicios adicionales.</p>
-                    </div>
-                </div>
-            </div>
-        `;
-
-        // Insertar después del título
-        const titleElement = document.querySelector('.content h2') || container.firstChild;
-        if (titleElement && titleElement.nextSibling) {
-            container.insertBefore(devsCostSection, titleElement.nextSibling);
-        } else {
-            container.prepend(devsCostSection);
-        }
-    }
-});
-</script>
-
+    </script>
+    
 </body>
 </html>
