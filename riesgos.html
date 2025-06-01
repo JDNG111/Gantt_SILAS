@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matriz de Riesgo del Proyecto</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #34495e;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 5px;
+            margin-top: 40px;
+        }
+        .matrix-container {
+            margin: 30px 0;
+            overflow-x: auto;
+        }
+        .risk-matrix {
+            border-collapse: collapse;
+            width: 100%;
+            min-width: 900px;
+        }
+        .risk-matrix th, .risk-matrix td {
+            border: 2px solid #34495e;
+            padding: 12px;
+            text-align: center;
+            font-size: 11px;
+        }
+        .risk-matrix th {
+            background-color: #34495e;
+            color: white;
+            font-weight: bold;
+        }
+        .probability-label {
+            background-color: #3498db;
+            color: white;
+            font-weight: bold;
+            writing-mode: vertical-lr;
+            text-orientation: mixed;
+            width: 80px;
+        }
+        .impact-header {
+            background-color: #2c3e50;
+        }
+        .very-high { background-color: #c0392b; color: white; }
+        .high { background-color: #e74c3c; color: white; }
+        .medium { background-color: #f39c12; color: white; }
+        .low { background-color: #f1c40f; }
+        .very-low { background-color: #2ecc71; }
+        
+        .risk-item {
+            font-size: 9px;
+            margin: 1px 0;
+            padding: 1px 3px;
+            border-radius: 3px;
+            background-color: rgba(255,255,255,0.3);
+            display: block;
+        }
+        
+        .risks-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        .risks-table th, .risks-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+            font-size: 12px;
+        }
+        .risks-table th {
+            background-color: #34495e;
+            color: white;
+        }
+        .risks-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .legend {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 5px;
+        }
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            border: 1px solid #333;
+        }
+
+        .analysis-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        .analysis-table th, .analysis-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+            vertical-align: top;
+        }
+        .analysis-table th {
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+        }
+        .analysis-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .risk-high { background-color: #fdf2f2; }
+        .risk-very-high { background-color: #fbeaea; }
+        .risk-medium { background-color: #fef9e7; }
+
+        .section-divider {
+            margin: 50px 0;
+            border-top: 3px solid #3498db;
+            padding-top: 30px;
+        }
+
+        .summary-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .metric-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .metric-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            display: block;
+        }
+
+        .recommendations {
+            background: #f8f9fa;
+            border-left: 4px solid #3498db;
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Matriz de Riesgo del Proyecto<br>Sistema de Gestión de Filas</h1>
+        
+        <h2>Identificación de Riesgos por Actividad</h2>
+        <table class="risks-table">
+            <thead>
+                <tr>
+                    <th>Actividad</th>
+                    <th>Riesgo Identificado</th>
+                    <th>Descripción</th>
+                    <th>Probabilidad</th>
+                    <th>Impacto</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td rowspan="2">A - Análisis de Requisitos</td>
+                    <td>R01 - Baja participación en encuestas</td>
+                    <td>Los usuarios no participan activamente en las encuestas, resultando en datos insuficientes</td>
+                    <td>Media</td>
+                    <td>Alto</td>
+                </tr>
+                <tr>
+                    <td>R02 - Requisitos mal definidos</td>
+                    <td>Definición imprecisa de funcionalidades por falta de claridad en necesidades</td>
+                    <td>Media</td>
+                    <td>Muy Alto</td>
+                </tr>
+                <tr>
+                    <td rowspan="2">B - Análisis de Mercado</td>
+                    <td>R03 - Información competitiva desactualizada</td>
+                    <td>Los datos de competencia están obsoletos o son incompletos</td>
+                    <td>Media</td>
+                    <td>Medio</td>
+                </tr>
+                <tr>
+                    <td>R04 - Estimaciones financieras erróneas</td>
+                    <td>Cálculos de ROI y costos inexactos por variables no consideradas</td>
+                    <td>Alta</td>
+                    <td>Alto</td>
+                </tr>
+                <tr>
+                    <td rowspan="2">C - Diseño de Arquitectura</td>
+                    <td>R05 - Arquitectura no escalable</td>
+                    <td>El diseño no soporta el crecimiento futuro de usuarios o transacciones</td>
+                    <td>Media</td>
+                    <td>Muy Alto</td>
+                </tr>
+                <tr>
+                    <td>R06 - Casos de uso incompletos</td>
+                    <td>No se identifican todos los escenarios de uso del sistema</td>
+                    <td>Alta</td>
+                    <td>Alto</td>
+                </tr>
+                <tr>
+                    <td rowspan="2">D - Diseño de UI/UX</td>
+                    <td>R07 - Interfaz poco intuitiva</td>
+                    <td>Los usuarios finales encuentran dificultades para usar la aplicación</td>
+                    <td>Media</td>
+                    <td>Alto</td>
+                </tr>
+                <tr>
+                    <td>R08 - Incompatibilidad con dispositivos</td>
+                    <td>El diseño no se adapta correctamente a diferentes tamaños de pantalla</td>
+                    <td>Media</td>
+                    <td>Medio</td>
+                </tr>
+                <tr>
+                    <td rowspan="2">E - Configuración del Entorno</td>
+                    <td>R09 - Problemas de configuración de servidores</td>
+                    <td>Dificultades técnicas en la configuración de infraestructura cloud</td>
+                    <td>Media</td>
+                    <td>Alto</td>
+                </tr>
+                <tr>
+                    <td>R10 - Costos de servidor superiores</td>
+                    <td>Los costos de infraestructura exceden el presupuesto estimado</td>
+                    <td>Alta</td>
+                    <td>Medio</td>
+                </tr>
+                <tr>
+                    <td rowspan="2">F - Desarrollo de Base de Datos</td>
+                    <td>R11 - Modelo de datos inadecuado</td>
+                    <td>El diseño de BD no satisface los requerimientos de rendimiento</td>
+                    <td>Media</td>
+                    <td>Muy Alto</td>
+                </tr>
+                <tr>
+                    <td>R12 - Problemas de migración de datos</td>
+                    <td>Dificultades para integrar datos existentes al nuevo sistema</td>
+                    <td>Alta</td>
+                    <td>Alto</td>
+                </tr>
+                <tr>
+                    <td rowspan="2">G - Desarrollo de Algoritmos Core</td>
+                    <td>R13 - Algoritmos ineficientes</td>
+                    <td>Los algoritmos de gestión de filas no optimizan los tiempos de espera</td>
+                    <td>Media</td>
+                    <td>Muy Alto</td>
+                </tr>
+                <tr>
+                    <td>R14 - Complejidad algorítmica subestimada</td>
+                    <td>Mayor tiempo de desarrollo requerido para algoritmos de priorización</td>
+                    <td>Alta</td>
+                    <td>Alto</td>
+                </tr>
+                <tr>
+                    <td rowspan="2">H - Desarrollo de Módulos Administrativos</td>
+                    <td>R15 - Dashboard con información incompleta</td>
+                    <td>Los reportes analíticos no proporcionan la información necesaria</td>
+                    <td>Media</td>
+                    <td>Alto</td>
+                </tr>
+                <tr>
+                    <td>R16 - Vulnerabilidades de seguridad</td>
+                    <td>Problemas de control de acceso en módulos administrativos</td>
+                    <td>Media</td>
+                    <td>Muy Alto</td>
+                </tr>
+                <tr>
+                    <td rowspan="2">I - Sistema de Notificaciones</td>
+                    <td>R17 - Fallas en notificaciones push</td>
+                    <td>El sistema de notificaciones no funciona de manera confiable</td>
+                    <td>Media</td>
+                    <td>Alto</td>
+                </tr>
+                <tr>
+                    <td>R18 - Costos SMS/email excesivos</td>
+                    <td>Los costos de mensajería superan el presupuesto por volumen alto</td>
+                    <td>Alta</td>
+                    <td>Medio</td>
+                </tr>
+                <tr>
+                    <td rowspan="2">J - Desarrollo Frontend</td>
+                    <td>R19 - Incompatibilidad entre navegadores</td>
+                    <td>La aplicación web no funciona correctamente en todos los browsers</td>
+                    <td>Media</td>
+                    <td>Medio</td>
+                </tr>
+                <tr>
+                    <td>R20 - Problemas de certificación móvil</td>
+                    <td>Dificultades para publicar en App Store/Google Play</td>
+                    <td>Baja</td>
+                    <td>Alto</td>
+                </tr>
+                <tr>
+                    <td rowspan="2">K - Desarrollo Backend</td>
+                    <td>R21 - APIs con bajo rendimiento</td>
+                    <td>Los endpoints no manejan adecuadamente la carga esperada</td>
+                    <td>Media</td>
+                    <td>Alto</td>
+                </tr>
+                <tr>
+                    <td>R22 - Fallas en integración</td>
+                    <td>Problemas de comunicación entre frontend y backend</td>
+                    <td>Alta</td>
+                    <td>Alto</td>
+                </tr>
+                <tr>
+                    <td rowspan="2">L - Testing y Calidad</td>
+                    <td>R23 - Cobertura de pruebas insuficiente</td>
+                    <td>Las pruebas unitarias e integración no cubren casos críticos</td>
+                    <td>Media</td>
+                    <td>Alto</td>
+                </tr>
+                <tr>
+                    <td>R24 - Pruebas de aceptación rechazadas</td>
+                    <td>Los usuarios finales no aprueban las funcionalidades desarrolladas</td>
+                    <td>Media</td>
+                    <td>Muy Alto</td>
+                </tr>
+                <tr>
+                    <td rowspan="2">M - Optimización y Seguridad</td>
+                    <td>R25 - Vulnerabilidades de seguridad críticas</td>
+                    <td>Se encuentran fallas de seguridad que comprometen datos sensibles</td>
+                    <td>Baja</td>
+                    <td>Muy Alto</td>
+                </tr>
+                <tr>
+                    <td>R26 - Rendimiento insuficiente en producción</td>
+                    <td>El sistema no cumple con los requerimientos de velocidad en ambiente real</td>
+                    <td>Alta</td>
+                    <td>Alto</td>
+                </tr>
+                <tr>
+                    <td rowspan="2">N - Despliegue</td>
+                    <td>R27 - Falla en despliegue a producción</td>
+                    <td>Problemas técnicos durante la puesta en producción del sistema</td>
+                    <td>Media</td>
+                    <td>Muy Alto</td>
+                </tr>
+                <tr>
+                    <td>R28 - Pérdida de datos durante migración</td>
+                    <td>Corrupción o pérdida de información durante el proceso de migración</td>
+                    <td>Baja</td>
+                    <td>Muy Alto</td>
+                </tr>
+                <tr>
+                    <td rowspan="2">O - Capacitación</td>
+                    <td>R29 - Resistencia al cambio del personal</td>
+                    <td>Los empleados se resisten a adoptar el nuevo sistema</td>
+                    <td>Alta</td>
+                    <td>Alto</td>
+                </tr>
+                <tr>
+                    <td>R30 - Capacitación inadecuada</td>
+                    <td>Los materiales o sesiones de entrenamiento no son efectivos</td>
+                    <td>Media</td>
+                    <td>Alto</td>
+                </tr>
+                <tr>
+                    <td rowspan="2">P - Mantenimiento y Mejora</td>
+                    <td>R31 - Monitoreo insuficiente</td>
+                    <td>Falta de visibilidad sobre el rendimiento y problemas del sistema</td>
+                    <td>Media</td>
+                    <td>Alto</td>
+                </tr>
+                <tr>
+                    <td>R32 - Feedback negativo de usuarios</td>
+                    <td>Los usuarios reportan insatisfacción con el sistema implementado</td>
+                    <td>Alta</td>
+                    <td>Alto</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Matriz de Probabilidad vs Impacto</h2>
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color very-high"></div>
+                <span>Riesgo Muy Alto</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color high"></div>
+                <span>Riesgo Alto</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color medium"></div>
+                <span>Riesgo Medio</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color low"></div>
+                <span>Riesgo Bajo</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color very-low"></div>
+                <span>Riesgo Muy Bajo</span>
+            </div>
+        </div>
+
+        <div class="matrix-container">
+            <table class="risk-matrix">
+                <thead>
+                    <tr>
+                        <th rowspan="2" class="probability-label">PROBABILIDAD</th>
+                        <th colspan="5" class="impact-header">IMPACTO</th>
+                    </tr>
+                    <tr>
+                        <th class="impact-header">Muy Bajo</th>
+                        <th class="impact-header">Bajo</th>
+                        <th class="impact-header">Medio</th>
+                        <th class="impact-header">Alto</th>
+                        <th class="impact-header">Muy Alto</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th class="probability-label">Muy Alta</th>
+                        <td class="medium"></td>
+                        <td class="high"></td>
+                        <td class="high"></td>
+                        <td class="very-high"></td>
+                        <td class="very-high"></td>
+                    </tr>
+                    <tr>
+                        <th class="probability-label">Alta</th>
+                        <td class="low"></td>
+                        <td class="medium"></td>
+                        <td class="high">
+                            <div class="risk-item">R04</div>
+                            <div class="risk-item">R10</div>
+                            <div class="risk-item">R18</div>
+                        </td>
+                        <td class="high">
+                            <div class="risk-item">R06</div>
+                            <div class="risk-item">R12</div>
+                            <div class="risk-item">R14</div>
+                            <div class="risk-item">R22</div>
+                            <div class="risk-item">R26</div>
+                            <div class="risk-item">R29</div>
+                            <div class="risk-item">R32</div>
+                        </td>
+                        <td class="very-high"></td>
+                    </tr>
+                    <tr>
+                        <th class="probability-label">Media</th>
+                        <td class="very-low"></td>
+                        <td class="low"></td>
+                        <td class="medium">
+                            <div class="risk-item">R03</div>
+                            <div class="risk-item">R08</div>
+                            <div class="risk-item">R19</div>
+                        </td>
+                        <td class="high">
+                            <div class="risk-item">R01</div>
+                            <div class="risk-item">R07</div>
+                            <div class="risk-item">R09</div>
+                            <div class="risk-item">R15</div>
+                            <div class="risk-item">R17</div>
+                            <div class="risk-item">R21</div>
+                            <div class="risk-item">R23</div>
+                            <div class="risk-item">R30</div>
+                            <div class="risk-item">R31</div>
+                        </td>
+                        <td class="very-high">
+                            <div class="risk-item">R02</div>
+                            <div class="risk-item">R05</div>
+                            <div class="risk-item">R11</div>
+                            <div class="risk-item">R13</div>
+                            <div class="risk-item">R16</div>
+                            <div class="risk-item">R24</div>
+                            <div class="risk-item">R27</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="probability-label">Baja</th>
+                        <td class="very-low"></td>
+                        <td class="very-low"></td>
+                        <td class="low"></td>
+                        <td class="medium">
+                            <div class="risk-item">R20</div>
+                        </td>
+                        <td class="high">
+                            <div class="risk-item">R25</div>
+                            <div class="risk-item">R28</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="probability-label">Muy Baja</th>
+                        <td class="very-low"></td>
+                        <td class="very-low"></td>
+                        <td class="very-low"></td>
+                        <td class="low"></td>
+                        <td class="medium"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="summary-metrics">
+            <div class="metric-card">
+                <span class="metric-number">32</span>
+                <div>Total de Riesgos Identificados</div>
+            </div>
+            <div class="metric-card">
+                <span class="metric-number">9</span>
+                <div>Riesgos de Nivel Muy Alto</div>
+            </div>
+            <div class="metric-card">
+                <span class="metric-number">17</span>
+                <div>Riesgos de Nivel Alto</div>
+            </div>
+            <div class="metric-card">
+                <span class="metric-number">6</span>
+                <div>Riesgos de Nivel Medio</div>
+            </div>
+        </div>
+
+        <h2>Resumen de Riesgos por Nivel</h2>
+        <table class="risks-table">
+            <thead>
+                <tr>
+                    <th>Nivel de Riesgo</th>
+                    <th>Cantidad</th>
+                    <th>Riesgos</th>
+                    <th>Acción Recomendada</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="very-high">
+                    <td>Muy Alto</td>
+                    <td>9</td>
+                    <td>R02, R05, R11, R13, R16, R24, R25, R27, R28</td>
+                    <td>Atención inmediata y plan de mitigación detallado</td>
+                </tr>
+                <tr class="high">
+                    <td>Alto</td>
+                    <td>17</td>
+                    <td>R01, R06, R07, R09, R12, R14, R15, R17, R20, R21, R22, R23, R26, R29, R30, R31, R32</td>
+                    <td>Monitoreo continuo y medidas preventivas</td>
+                </tr>
+                <tr class="medium">
+                    <td>Medio</td>
+                    <td>6</td>
+                    <td>R03, R04, R08, R10, R18, R19</td>
+                    <td>Revisión periódica y planes de contingencia</td>
+                </tr>
+                <tr class="low">
+                    <td>Bajo</td>
+                    <td>0</td>
+                    <td>-</td>
+                    <td>Monitoreo básico</td>
+                </tr>
+                <tr class="very-low">
+                    <td>Muy Bajo</td>
+                    <td>0</td>
+                    <td>-</td>
+                    <td>Sin acción específica requerida</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="section-divider">
+            <h1>Análisis de Causas y Soluciones para Cada Riesgo</h1>
+        </div>
+
+        <h2>Riesgos de Nivel Muy Alto</h2>
+        <table class="analysis-table">
+            <thead>
+                <tr>
+                    <th style="width: 15%">Riesgo</th>
+                    <th style="width: 35%">Causas Principales</th>
+                    <th style="width: 35%">Soluciones Propuestas</th>
+                    <th style="width: 15%">Responsable</th>
+                </tr>
+            </thead>
+            <tbody class="risk-very-high">
+                <tr>
+                    <td><strong>R02</strong><br>Requisitos mal definidos</td>
+                    <td>• Falta de comunicación con stakeholders<br>• Inexperiencia en levantamiento de requisitos<br>• Tiempo insuficiente para análisis</td>
+                    <td>• Realizar workshops con usuarios clave<br>• Usar metodologías estructuradas (casos de uso)<br>• Validación iterativa de requisitos<br>• Prototipado temprano</td>
+                    <td>Analista de Requisitos</td>
+                </tr>
+                <tr>
+                    <td><strong>R05</strong><br>Arquitectura no escalable</td>
+                    <td>• Subestimación del crecimiento de usuarios<br>• Falta de experiencia en arquitecturas distribuidas<br>• Presión de tiempo en diseño</td>
+                    <td>• Diseño con patrones de microservicios<br>• Implementar load balancing desde inicio<br>• Usar tecnologías cloud-native<br>• Pruebas de carga tempranas</td>
+                    <td>Arquitecto de Software</td>
+                </tr>
+                <tr>
+                    <td><strong>R11</strong><br>Modelo de datos inadecuado</td>
+                    <td>• Análisis insuficiente de volumetrías<br>• Desconocimiento de patrones de acceso<br>• Falta de normalización adecuada</td>
+                    <td>• Modelado conceptual detallado<br>• Análisis de patrones de consulta<br>• Implementar índices estratégicos<br>• Revisión con DBA experto</td>
+                    <td>Desarrollador BD</td>
+                </tr>
+                <tr>
+                    <td><strong>R13</strong><br>Algoritmos ineficientes</td>
+                    <td>• Complejidad subestimada del problema<br>• Falta de expertise en teoría de colas<br>• Testing insuficiente con datos reales</td>
+                    <td>• Investigación en algoritmos de optimización<br>• Simulación con datos históricos<br>• Implementar algoritmos adaptativos<br>• Consultoría especializada</td>
+                    <td>Desarrollador Senior</td>
+                </tr>
+                <tr>
+                    <td><strong>R16</strong><br>Vulnerabilidades de seguridad</td>
+                    <td>• Conocimiento limitado en ciberseguridad<br>• Implementación apresurada<br>• Falta de revisiones de código enfocadas en seguridad</td>
+                    <td>• Auditorías de seguridad periódicas<br>• Usar frameworks seguros<br>• Implementar autenticación multifactor<br>• Capacitación en seguridad</td>
+                    <td>Especialista en Seguridad</td>
+                </tr>
+                <tr>
+                    <td><strong>R24</strong><br>Pruebas de aceptación rechazadas</td>
+                    <td>• Desconexión entre desarrollo y expectativas<br>• Criterios de aceptación ambiguos<br>• Falta de participación continua del usuario</td>
+                    <td>• Definir criterios claros desde inicio<br>• Demos iterativas con usuarios<br>• Metodología ágil con feedback continuo<br>• User Acceptance Testing estructurado</td>
+                    <td>Product Owner</td>
+                </tr>
+                <tr>
+                    <td><strong>R25</strong><br>Vulnerabilidades críticas</td>
+                    <td>• Dependencias de terceros no actualizadas<br>• Configuraciones por defecto inseguras<br>• Falta de análisis de seguridad automatizado</td>
+                    <td>• Análisis automático de vulnerabilidades<br>• Actualización constante de dependencias<br>• Penetration testing profesional<br>• Configuración hardening</td>
+                    <td>DevSecOps</td>
+                </tr>
+                <tr>
+                    <td><strong>R27</strong><br>Falla en despliegue</td>
+                    <td>• Diferencias entre entornos<br>• Proceso de despliegue manual<br>• Falta de plan de rollback</td>
+                    <td>• Automatización completa de despliegue<br>• Infrastructure as Code<br>• Estrategia blue-green deployment<br>• Ensayos en entornos de prueba
+<tr>
+                    <td><strong>R27</strong><br>Falla en despliegue</td>
+                    <td>• Diferencias entre entornos<br>• Proceso de despliegue manual<br>• Falta de plan de rollback</td>
+                    <td>• Automatización completa de despliegue<br>• Infrastructure as Code<br>• Estrategia blue-green deployment<br>• Ensayos en ambiente de staging<br>• Plan de rollback automatizado</td>
+                    <td>DevOps Engineer</td>
+                </tr>
+                <tr>
+                    <td><strong>R28</strong><br>Pérdida de datos durante migración</td>
+                    <td>• Proceso de migración no probado<br>• Respaldos insuficientes<br>• Falta de validación de integridad</td>
+                    <td>• Múltiples respaldos antes de migración<br>• Migración en fases pequeñas<br>• Validación exhaustiva de datos<br>• Plan de recuperación detallado<br>• Pruebas en ambiente de desarrollo</td>
+                    <td>DBA / Data Engineer</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Riesgos de Nivel Alto</h2>
+        <table class="analysis-table">
+            <thead>
+                <tr>
+                    <th style="width: 15%">Riesgo</th>
+                    <th style="width: 35%">Causas Principales</th>
+                    <th style="width: 35%">Soluciones Propuestas</th>
+                    <th style="width: 15%">Responsable</th>
+                </tr>
+            </thead>
+            <tbody class="risk-high">
+                <tr>
+                    <td><strong>R01</strong><br>Baja participación en encuestas</td>
+                    <td>• Falta de incentivos para participar<br>• Encuestas muy largas o complejas<br>• Canales de comunicación inadecuados</td>
+                    <td>• Ofrecer incentivos (descuentos, premios)<br>• Simplificar encuestas<br>• Usar múltiples canales de comunicación<br>• Hacer seguimiento personalizado</td>
+                    <td>Analista de Requisitos</td>
+                </tr>
+                <tr>
+                    <td><strong>R06</strong><br>Casos de uso incompletos</td>
+                    <td>• Análisis superficial de procesos<br>• Falta de participación de usuarios finales<br>• Documentación insuficiente</td>
+                    <td>• Sesiones de trabajo con usuarios<br>• Mapeo completo de procesos<br>• Revisión por comité de usuarios<br>• Documentación detallada y visual</td>
+                    <td>Analista de Sistemas</td>
+                </tr>
+                <tr>
+                    <td><strong>R07</strong><br>Interfaz poco intuitiva</td>
+                    <td>• Falta de investigación UX<br>• No considerar diferentes tipos de usuarios<br>• Testing con usuarios insuficiente</td>
+                    <td>• Research de usuarios y personas<br>• Prototipado iterativo<br>• Testing de usabilidad frecuente<br>• Seguir estándares de UX</td>
+                    <td>UX/UI Designer</td>
+                </tr>
+                <tr>
+                    <td><strong>R09</strong><br>Problemas configuración servidores</td>
+                    <td>• Inexperiencia con tecnologías cloud<br>• Documentación técnica insuficiente<br>• Falta de ambientes de prueba</td>
+                    <td>• Capacitación en tecnologías cloud<br>• Usar templates de infraestructura<br>• Documentar configuraciones<br>• Crear ambientes de desarrollo idénticos</td>
+                    <td>DevOps Engineer</td>
+                </tr>
+                <tr>
+                    <td><strong>R12</strong><br>Problemas migración de datos</td>
+                    <td>• Formatos de datos incompatibles<br>• Volumen de datos subestimado<br>• Falta de mapeo de datos</td>
+                    <td>• Análisis detallado de datos origen<br>• Crear ETL robustos<br>• Migración en lotes pequeños<br>• Validación continua de calidad</td>
+                    <td>Data Engineer</td>
+                </tr>
+                <tr>
+                    <td><strong>R14</strong><br>Complejidad algorítmica subestimada</td>
+                    <td>• Análisis inicial superficial<br>• Falta de expertise técnico<br>• Requisitos cambiantes</td>
+                    <td>• Investigación técnica profunda<br>• Consultoría externa especializada<br>• Prototipado de algoritmos<br>• Buffer de tiempo adicional</td>
+                    <td>Tech Lead</td>
+                </tr>
+                <tr>
+                    <td><strong>R15</strong><br>Dashboard información incompleta</td>
+                    <td>• Requisitos de reporting no claros<br>• Fuentes de datos no identificadas<br>• KPIs mal definidos</td>
+                    <td>• Workshop para definir métricas<br>• Mapear todas las fuentes de datos<br>• Prototipo de dashboards<br>• Validación iterativa con usuarios</td>
+                    <td>Business Analyst</td>
+                </tr>
+                <tr>
+                    <td><strong>R17</strong><br>Fallas notificaciones push</td>
+                    <td>• Configuración incorrecta de servicios<br>• Problemas de conectividad<br>• Limitaciones de plataformas móviles</td>
+                    <td>• Testing exhaustivo en dispositivos<br>• Implementar fallbacks (SMS/email)<br>• Monitoreo en tiempo real<br>• Usar servicios confiables</td>
+                    <td>Desarrollador Mobile</td>
+                </tr>
+                <tr>
+                    <td><strong>R20</strong><br>Problemas certificación móvil</td>
+                    <td>• Desconocimiento de políticas de stores<br>• Aplicación no cumple guidelines<br>• Documentación insuficiente</td>
+                    <td>• Revisar guidelines desde inicio<br>• Testing en dispositivos reales<br>• Preparar documentación completa<br>• Considerar beta testing</td>
+                    <td>Mobile Developer</td>
+                </tr>
+                <tr>
+                    <td><strong>R21</strong><br>APIs con bajo rendimiento</td>
+                    <td>• Diseño de APIs ineficiente<br>• Falta de optimización de consultas<br>• No considerar caching</td>
+                    <td>• Diseño RESTful optimizado<br>• Implementar caching en múltiples niveles<br>• Optimización de consultas BD<br>• Load testing continuo</td>
+                    <td>Backend Developer</td>
+                </tr>
+                <tr>
+                    <td><strong>R22</strong><br>Fallas en integración</td>
+                    <td>• Interfaces mal definidas<br>• Versionado inconsistente<br>• Testing de integración insuficiente</td>
+                    <td>• Contratos de API bien definidos<br>• Estrategia de versionado clara<br>• Integration testing automatizado<br>• Documentación de APIs actualizada</td>
+                    <td>Full Stack Developer</td>
+                </tr>
+                <tr>
+                    <td><strong>R23</strong><br>Cobertura pruebas insuficiente</td>
+                    <td>• Presión de tiempo de desarrollo<br>• Falta de cultura de testing<br>• Herramientas de testing inadecuadas</td>
+                    <td>• Definir mínimos de cobertura<br>• Automatizar testing en CI/CD<br>• Capacitación en TDD/BDD<br>• Usar herramientas de análisis de cobertura</td>
+                    <td>QA Engineer</td>
+                </tr>
+                <tr>
+                    <td><strong>R26</strong><br>Rendimiento insuficiente en producción</td>
+                    <td>• Diferencias entre ambiente de desarrollo y producción<br>• Carga real mayor a estimada<br>• Falta de monitoreo</td>
+                    <td>• Ambiente de staging idéntico a producción<br>• Load testing con datos reales<br>• Monitoreo de performance en tiempo real<br>• Plan de escalamiento automático</td>
+                    <td>Performance Engineer</td>
+                </tr>
+                <tr>
+                    <td><strong>R29</strong><br>Resistencia al cambio del personal</td>
+                    <td>• Falta de comunicación sobre beneficios<br>• No involucrar al personal en el proceso<br>• Cambios muy abruptos</td>
+                    <td>• Plan de gestión del cambio<br>• Comunicación continua de beneficios<br>• Involucrar usuarios en diseño<br>• Implementación gradual</td>
+                    <td>Change Manager</td>
+                </tr>
+                <tr>
+                    <td><strong>R30</strong><br>Capacitación inadecuada</td>
+                    <td>• Materiales de capacitación genéricos<br>• No considerar diferentes niveles de usuarios<br>• Falta de práctica hands-on</td>
+                    <td>• Materiales personalizados por rol<br>• Capacitación en cascada<br>• Sesiones prácticas con datos reales<br>• Material de referencia actualizado</td>
+                    <td>Training Manager</td>
+                </tr>
+                <tr>
+                    <td><strong>R31</strong><br>Monitoreo insuficiente</td>
+                    <td>• Falta de herramientas de monitoreo<br>• KPIs no definidos<br>• Alertas mal configuradas</td>
+                    <td>• Implementar dashboard de monitoreo<br>• Definir SLAs y KPIs claros<br>• Sistema de alertas automáticas<br>• Reportes periódicos automatizados</td>
+                    <td>Operations Manager</td>
+                </tr>
+                <tr>
+                    <td><strong>R32</strong><br>Feedback negativo de usuarios</td>
+                    <td>• Expectativas no manejadas correctamente<br>• Sistema no cumple necesidades reales<br>• Falta de canal de comunicación</td>
+                    <td>• Gestión proactiva de expectativas<br>• Canal de feedback estructurado<br>• Proceso de mejora continua<br>• Respuesta rápida a problemas</td>
+                    <td>Product Manager</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Riesgos de Nivel Medio</h2>
+        <table class="analysis-table">
+            <thead>
+                <tr>
+                    <th style="width: 15%">Riesgo</th>
+                    <th style="width: 35%">Causas Principales</th>
+                    <th style="width: 35%">Soluciones Propuestas</th>
+                    <th style="width: 15%">Responsable</th>
+                </tr>
+            </thead>
+            <tbody class="risk-medium">
+                <tr>
+                    <td><strong>R03</strong><br>Información competitiva desactualizada</td>
+                    <td>• Fuentes de información limitadas<br>• Análisis competitivo esporádico<br>• Mercado cambiante</td>
+                    <td>• Suscripciones a reportes de mercado<br>• Monitoreo continuo de competencia<br>• Network de contactos en industria<br>• Análisis trimestral de competencia</td>
+                    <td>Market Analyst</td>
+                </tr>
+                <tr>
+                    <td><strong>R04</strong><br>Estimaciones financieras erróneas</td>
+                    <td>• Datos históricos insuficientes<br>• Variables externas no consideradas<br>• Modelos financieros simplificados</td>
+                    <td>• Modelos financieros conservadores<br>• Análisis de sensibilidad<br>• Revisión por experto financiero<br>• Actualización periódica de proyecciones</td>
+                    <td>Financial Analyst</td>
+                </tr>
+                <tr>
+                    <td><strong>R08</strong><br>Incompatibilidad con dispositivos</td>
+                    <td>• Testing limitado en dispositivos<br>• Fragmentación de plataformas<br>• Recursos limitados para testing</td>
+                    <td>• Testing en dispositivos representativos<br>• Usar frameworks responsive<br>• Progressive Web App approach<br>• Testing automatizado cross-browser</td>
+                    <td>Frontend Developer</td>
+                </tr>
+                <tr>
+                    <td><strong>R10</strong><br>Costos de servidor superiores</td>
+                    <td>• Estimaciones de uso conservadoras<br>• Arquitectura no optimizada<br>• Falta de monitoreo de costos</td>
+                    <td>• Monitoreo continuo de costos<br>• Implementar auto-scaling<br>• Optimización de recursos<br>• Alertas de presupuesto</td>
+                    <td>Cloud Architect</td>
+                </tr>
+                <tr>
+                    <td><strong>R18</strong><br>Costos SMS/email excesivos</td>
+                    <td>• Volumen de notificaciones subestimado<br>• Falta de optimización de mensajes<br>• No considerar alternativas</td>
+                    <td>• Implementar sistema de preferencias<br>• Optimizar frecuencia de mensajes<br>• Usar canales alternativos gratuitos<br>• Negociar tarifas por volumen</td>
+                    <td>Communications Manager</td>
+                </tr>
+                <tr>
+                    <td><strong>R19</strong><br>Incompatibilidad entre navegadores</td>
+                    <td>• Testing limitado en navegadores<br>• Uso de features experimentales<br>• Falta de polyfills</td>
+                    <td>• Testing automatizado cross-browser<br>• Usar features estables y estándar<br>• Implementar polyfills necesarios<br>• Progressive enhancement</td>
+                    <td>Frontend Developer</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="section-divider">
+            <h1>Plan de Mitigación y Monitoreo</h1>
+        </div>
+
+        <h2>Estrategias de Mitigación por Categoría de Riesgo</h2>
+        
+        <div class="recommendations">
+            <h3>🚨 Riesgos Muy Altos - Acción Inmediata</h3>
+            <p><strong>Frecuencia de Revisión:</strong> Semanal</p>
+            <p><strong>Acciones Requeridas:</strong></p>
+            <ul>
+                <li>Plan de mitigación detallado para cada riesgo</li>
+                <li>Asignación de responsables específicos</li>
+                <li>Revisión semanal en comité de proyecto</li>
+                <li>Métricas de seguimiento definidas</li>
+                <li>Plan de contingencia preparado</li>
+            </ul>
+        </div>
+
+        <div class="recommendations">
+            <h3>⚠️ Riesgos Altos - Monitoreo Continuo</h3>
+            <p><strong>Frecuencia de Revisión:</strong> Quincenal</p>
+            <p><strong>Acciones Requeridas:</strong></p>
+            <ul>
+                <li>Medidas preventivas implementadas</li>
+                <li>Indicadores tempranos de alerta</li>
+                <li>Revisión quincenal del estado</li>
+                <li>Recursos asignados para mitigación</li>
+            </ul>
+        </div>
+
+        <div class="recommendations">
+            <h3>🔍 Riesgos Medios - Revisión Periódica</h3>
+            <p><strong>Frecuencia de Revisión:</strong> Mensual</p>
+            <p><strong>Acciones Requeridas:</strong></p>
+            <ul>
+                <li>Plan de contingencia básico</li>
+                <li>Revisión mensual del estado</li>
+                <li>Presupuesto de contingencia asignado</li>
+            </ul>
+        </div>
+
+        <h2>Cronograma de Actividades de Gestión de Riesgos</h2>
+        <table class="risks-table">
+            <thead>
+                <tr>
+                    <th>Actividad</th>
+                    <th>Frecuencia</th>
+                    <th>Responsable</th>
+                    <th>Entregable</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Revisión de Riesgos Muy Altos</td>
+                    <td>Semanal</td>
+                    <td>Project Manager</td>
+                    <td>Reporte de estado y acciones</td>
+                </tr>
+                <tr>
+                    <td>Revisión de Riesgos Altos</td>
+                    <td>Quincenal</td>
+                    <td>Tech Lead</td>
+                    <td>Dashboard de indicadores</td>
+                </tr>
+                <tr>
+                    <td>Revisión de Riesgos Medios</td>
+                    <td>Mensual</td>
+                    <td>Analista de Riesgos</td>
+                    <td>Informe mensual</td>
+                </tr>
+                <tr>
+                    <td>Actualización de Matriz de Riesgos</td>
+                    <td>Mensual</td>
+                    <td>Equipo de Proyecto</td>
+                    <td>Matriz actualizada</td>
+                </tr>
+                <tr>
+                    <td>Revisión General de Riesgos</td>
+                    <td>Trimestral</td>
+                    <td>Comité de Proyecto</td>
+                    <td>Plan de riesgos actualizado</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Indicadores Clave de Seguimiento</h2>
+        <table class="risks-table">
+            <thead>
+                <tr>
+                    <th>Indicador</th>
+                    <th>Fórmula</th>
+                    <th>Meta</th>
+                    <th>Frecuencia</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Riesgos Materializados</td>
+                    <td>(Riesgos ocurridos / Total riesgos) × 100</td>
+                    <td>< 15%</td>
+                    <td>Mensual</td>
+                </tr>
+                <tr>
+                    <td>Efectividad de Mitigación</td>
+                    <td>(Riesgos mitigados / Riesgos con plan) × 100</td>
+                    <td>> 80%</td>
+                    <td>Mensual</td>
+                </tr>
+                <tr>
+                    <td>Tiempo Promedio de Respuesta</td>
+                    <td>Promedio días desde identificación hasta acción</td>
+                    <td>< 7 días</td>
+                    <td>Mensual</td>
+                </tr>
+                <tr>
+                    <td>Impacto en Cronograma</td>
+                    <td>Días de retraso por riesgos materializados</td>
+                    <td>< 10 días</td>
+                    <td>Quincenal</td>
+                </tr>
+                <tr>
+                    <td>Impacto en Presupuesto</td>
+                    <td>% sobrecosto por riesgos materializados</td>
+                    <td>< 5%</td>
+                    <td>Mensual</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="recommendations">
+            <h3>📋 Recomendaciones Finales</h3>
+            <p><strong>Para el éxito del proyecto se recomienda:</strong></p>
+            <ul>
+                <li><strong>Priorizar los 9 riesgos muy altos</strong> con planes de acción inmediatos</li>
+                <li><strong>Establecer un comité de gestión de riesgos</strong> que se reúna semanalmente</li>
+                <li><strong>Implementar herramientas de monitoreo</strong> para detectar señales tempranas</li>
+                <li><strong>Mantener un fondo de contingencia</strong> del 15-20% del presupuesto total</li>
+                <li><strong>Capacitar al equipo</strong> en las tecnologías críticas identificadas</li>
+                <li><strong>Documentar lecciones aprendidas</strong> para futuros proyectos</li>
+            </ul>
+        </div>
+
+        <div style="text-align: center; margin-top: 50px; padding: 20px; background-color: #ecf0f1; border-radius: 5px;">
+            <p><strong>Fecha de creación:</strong> Junio 2025</p>
+            <p><strong>Próxima revisión:</strong> Julio 2025</p>
+            <p><strong>Versión:</strong> 1.0</p>
+        </div>
+    </div>
+</body>
+</html>
